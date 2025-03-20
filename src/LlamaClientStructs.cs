@@ -244,6 +244,14 @@ public partial class LlamaClient {
         [JsonPropertyName("temperature")] public float? Temperature { get; set; }
         [JsonPropertyName("seed")] public int? Seed { get; set; }
         [JsonPropertyName("response_format")] public OAIResponseFormat? ResponseFormat { get; set; }
+        [JsonPropertyName("frequency_penalty")] public float? FrequencyPenalty { get; set; }
+        [JsonPropertyName("max_completion_tokens")] public int? MaxCompletionTokens { get; set; }
+        [JsonPropertyName("n")] public int? N { get; set; }
+        [JsonPropertyName("logprobs")] public bool? Logprobs { get; set; }
+        [JsonPropertyName("top_logprobs")] public int? TopLogprobs { get; set; }
+        [JsonPropertyName("presence_penalty")] public float? PresencePenalty { get; set; }
+        [JsonPropertyName("stop")] public string[]? Stop { get; set; }
+        [JsonPropertyName("top_p")] public float? TopP { get; set; }
         [JsonPropertyName("stream")] public bool? Stream { get; set; }
 
         public class Builder {
@@ -265,6 +273,14 @@ public partial class LlamaClient {
             public Builder SetTemperature(float? value) { content.Temperature = value; return this; }
             public Builder SetSeed(int value) { content.Seed = value; return this; }
             public Builder SetResponseFormat(OAIResponseFormat.ResponseType type, JsonNode? schema) { content.ResponseFormat = new OAIResponseFormat() { Type = type, Schema = schema }; return this; }
+            public Builder SetFrequencyPenalty(float value) { content.FrequencyPenalty = value; return this; }
+            public Builder SetMaxCompletionTokens(int value) { content.MaxCompletionTokens = value; return this; }
+            public Builder SetN(int value) { content.N = value; return this; }
+            public Builder SetLogprobs(bool value) { content.Logprobs = value; return this; }
+            public Builder SetTopLogprobs(int value) { content.TopLogprobs = value; return this; }
+            public Builder SetPresencePenalty(float value) { content.PresencePenalty = value; return this; }
+            public Builder SetStop(string[] value) { content.Stop = value; return this; }
+            public Builder SetTopP(float value) { content.TopP = value; return this; }
         }
     }
 
