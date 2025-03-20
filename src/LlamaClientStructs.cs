@@ -27,6 +27,16 @@ public partial class LlamaClient {
         [JsonPropertyName("predicted_per_token_ms")] public double PredictedPerTokenMs { get; set; }
         [JsonPropertyName("predicted_per_second")] public double PredictedPerSecond { get; set; }
     }
+
+    public class CommonMessage {
+        public string role { get; set; }
+        public string content { get; set; }
+
+        public CommonMessage(string role, string content) {
+            this.role = role;
+            this.content = content;
+        }
+    }
 #endregion Commonly used classes
 
 #region Completion
@@ -215,6 +225,33 @@ public partial class LlamaClient {
     }
 #endregion Tokenize
 
+#region Apply chat template
+    public class ApplyTemplateContent {
+        [JsonPropertyName("messages")] public required CommonMessage[] Messages { get; set; }
+
+        public class Builder {
+            private ApplyTemplateContent content;
+
+            public Builder() {
+                content = new() {
+                    Messages = null!
+                };
+            }
+
+            public ApplyTemplateContent Build() {
+                if (content.Messages is null) throw new InvalidOperationException("Messages are not set!");
+                return content;
+            }
+
+            public Builder SetMessages(CommonMessage[] value) { content.Messages = value; return this; }
+        }
+    }
+
+    public class ApplyTemplateResponse {
+        [JsonPropertyName("prompt")] public required string Prompt { get; set; }
+    }
+#endregion Apply chat template
+
 #region OpenAI-compatible Model Info
     public class OAIModelsResponse {
         [JsonPropertyName("object")] public required string Object { get; set; }
@@ -252,19 +289,9 @@ public partial class LlamaClient {
         }
     }
 
-    public class OAIChatCompletionMessage {
-        public string role { get; set; }
-        public string content { get; set; }
-
-        public OAIChatCompletionMessage(string role, string content) {
-            this.role = role;
-            this.content = content;
-        }
-    }
-
     public class OAIChatCompletionContent {
         [JsonPropertyName("model")] public required string Model { get; set; }
-        [JsonPropertyName("messages")] public required OAIChatCompletionMessage[] Messages { get; set; }
+        [JsonPropertyName("messages")] public required CommonMessage[] Messages { get; set; }
         [JsonPropertyName("temperature")] public float? Temperature { get; set; }
         [JsonPropertyName("seed")] public int? Seed { get; set; }
         [JsonPropertyName("response_format")] public OAIResponseFormat? ResponseFormat { get; set; }
@@ -293,7 +320,7 @@ public partial class LlamaClient {
                 return content;
             }
 
-            public Builder SetMessages(OAIChatCompletionMessage[] value) { content.Messages = value; return this; }
+            public Builder SetMessages(CommonMessage[] value) { content.Messages = value; return this; }
             public Builder SetTemperature(float? value) { content.Temperature = value; return this; }
             public Builder SetSeed(int value) { content.Seed = value; return this; }
             public Builder SetResponseFormat(OAIResponseFormat.ResponseType type, JsonNode? schema) { content.ResponseFormat = new OAIResponseFormat() { Type = type, Schema = schema }; return this; }

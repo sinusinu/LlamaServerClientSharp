@@ -13,7 +13,7 @@ class Program {
 
 #region Completion
         // Gemma 3 specific format
-        var prompt = "<bos><start_of_turn>user\nYou are a helpful assistant\n\nHello<end_of_turn>\n<start_of_turn>model\n";
+        var prompt = "<start_of_turn>user\nYou are a helpful assistant\n\nHello<end_of_turn>\n<start_of_turn>model\n";
         var completionContent = new LlamaClient.CompletionContent.Builder()
             .SetPrompt(prompt)
             .Build();
@@ -52,18 +52,32 @@ class Program {
         Console.WriteLine(detokenizedString);
 #endregion Detokenize
 
+#region Apply chat template
+        var applyTemplateContent = new LlamaClient.ApplyTemplateContent.Builder()
+            .SetMessages([
+                new LlamaClient.CommonMessage(
+                    "user",
+                    "Hello!"
+                ),
+            ])
+            .Build();
+
+        var applyTemplateResponse = await llamaClient.ApplyTemplateAsync(applyTemplateContent);
+        Console.WriteLine(applyTemplateResponse.Prompt);
+#endregion Apply chat template
+
 #region OpenAI-compatible Model Info
         var models = await llamaClient.OAIModelsAsync();
         Console.WriteLine(models.Data[0].Id);
 #endregion OpenAI-compatible Model Info
 
 #region OpenAI-compatible Chat Completion
-        var chatCompletionMessages = new LlamaClient.OAIChatCompletionMessage[] {
-            new LlamaClient.OAIChatCompletionMessage(
+        var chatCompletionMessages = new LlamaClient.CommonMessage[] {
+            new LlamaClient.CommonMessage(
                 "system",
                 "Write an answer to the user's message, and evaluate if user's message was friendly. Output must follow the JSON schema given below.\n\n# JSON Schema\n```json\n{ \"answer\": string, \"positive\": boolean }\n```\n- answer: Answer to the user's message\n- positive: true if user's message was positive, false if not"
             ),
-            new LlamaClient.OAIChatCompletionMessage(
+            new LlamaClient.CommonMessage(
                 "user",
                 "Nice to meet you!"
             ),

@@ -126,7 +126,18 @@ public partial class LlamaClient : IDisposable {
         return detokenized;
     }
 
-    // TODO: apply-template
+    public async Task<ApplyTemplateResponse> ApplyTemplateAsync(ApplyTemplateContent content) {
+        using StringContent postContent = new(
+            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }), Encoding.UTF8, "application/json"
+        );
+        var response = await client.PostAsync(endpoint + "apply-template", postContent);
+        response.EnsureSuccessStatusCode();
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseJson = JsonSerializer.Deserialize<ApplyTemplateResponse>(responseContent)!;
+        return responseJson;
+    }
 
     // TODO: embedding
 
