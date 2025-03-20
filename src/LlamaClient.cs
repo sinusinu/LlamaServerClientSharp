@@ -14,7 +14,7 @@ public partial class LlamaClient : IDisposable {
         this.endpoint = endpoint.ToString();
     }
 
-    public async Task<Health> HealthAsync() {
+    public async Task<Health> GetHealthAsync() {
         var response = await client.GetAsync(endpoint + "health");
         response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
@@ -139,7 +139,7 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
 
-    public async Task<EmbeddingResponse[]> EmbeddingAsync(EmbeddingContent content) {
+    public async Task<EmbeddingResponse[]> GetEmbeddingAsync(EmbeddingContent content) {
         using StringContent postContent = new(
             JsonSerializer.Serialize(content, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
@@ -182,7 +182,7 @@ public partial class LlamaClient : IDisposable {
         response.EnsureSuccessStatusCode(); // should crash out here if failed
     }
 
-    public async Task<OAIModelsResponse> OAIModelsAsync() {
+    public async Task<OAIModelsResponse> OAIGetModelsAsync() {
         var response = await client.GetAsync(endpoint + "v1/models");
         response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();

@@ -10,7 +10,7 @@ class Program {
         Uri uri = new Uri("http://localhost:8080");
         var llamaClient = new LlamaClient(uri);
         
-        var health = await llamaClient.HealthAsync();
+        var health = await llamaClient.GetHealthAsync();
         Console.WriteLine(health);
 
 #region Completion
@@ -70,7 +70,7 @@ class Program {
             .SetContent("Hello world!")
             .Build();
 
-        var embeddingResponse = await llamaClient.EmbeddingAsync(embeddingContent);
+        var embeddingResponse = await llamaClient.GetEmbeddingAsync(embeddingContent);
         Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
 #endregion Generate Embedding
 
@@ -82,7 +82,7 @@ class Program {
 #endregion LoRA Adapters
 
 #region OpenAI-compatible Model Info
-        var models = await llamaClient.OAIModelsAsync();
+        var models = await llamaClient.OAIGetModelsAsync();
         Console.WriteLine(models.Data[0].Id);
 #endregion OpenAI-compatible Model Info
 
