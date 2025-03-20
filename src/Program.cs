@@ -54,7 +54,7 @@ class Program {
         Console.WriteLine(detokenizedString);
 #endregion Detokenize
 
-#region Apply chat template
+#region Apply Chat Template
         var applyTemplateContent = new ApplyTemplateContent.Builder()
             .SetMessages([
                 Message.User("Hello!")
@@ -63,16 +63,16 @@ class Program {
 
         var applyTemplateResponse = await llamaClient.ApplyTemplateAsync(applyTemplateContent);
         Console.WriteLine(applyTemplateResponse.Prompt);
-#endregion Apply chat template
+#endregion Apply Chat Template
 
-#region Generate embedding
+#region Generate Embedding
         var embeddingContent = new EmbeddingContent.Builder()
             .SetContent("Hello world!")
             .Build();
 
         var embeddingResponse = await llamaClient.EmbeddingAsync(embeddingContent);
         Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
-#endregion Generate embedding
+#endregion Generate Embedding
 
 #region LoRA Adapters
         var loraAdapters = await llamaClient.GetLoRAAdaptersAsync();
