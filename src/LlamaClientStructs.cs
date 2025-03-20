@@ -66,7 +66,7 @@ public partial class LlamaClient {
         [JsonPropertyName("n_probs")] public int? NProbs { get; set; }
         [JsonPropertyName("min_keep")] public int? MinKeep { get; set; }
         [JsonPropertyName("t_max_predict_ms")] public int? TMaxPredictMs { get; set; }
-        [JsonPropertyName("image_data")] public CompletionContentImageDataElement[]? ImageData { get; set; }
+        [JsonPropertyName("image_data")] public CompletionContentImageData[]? ImageData { get; set; }
         [JsonPropertyName("id_slot")] public int? IdSlot { get; set; }
         [JsonPropertyName("cache_prompt")] public bool? CachePrompt { get; set; }
         [JsonPropertyName("return_tokens")] public bool? ReturnTokens { get; set; }
@@ -74,7 +74,7 @@ public partial class LlamaClient {
         [JsonPropertyName("timings_per_token")] public bool? TimingsPerToken { get; set; }
         [JsonPropertyName("post_sampling_probs")] public bool? PostSamplingProbs { get; set; }
         [JsonPropertyName("response_fields")] public string[]? ResponseFields { get; set; }
-        [JsonPropertyName("lora")] public CompletionContentLoRAElement[]? LoRA { get; set; }
+        [JsonPropertyName("lora")] public CompletionContentLoRA[]? LoRA { get; set; }
 
         public class Builder {
             private CompletionContent content;
@@ -123,7 +123,7 @@ public partial class LlamaClient {
             public Builder SetNProbs(int? value) { content.NProbs = value; return this; }
             public Builder SetMinKeep(int? value) { content.MinKeep = value; return this; }
             public Builder SetTMaxPredictMs(int? value) { content.TMaxPredictMs = value; return this; }
-            public Builder SetImageData(CompletionContentImageDataElement[]? value) { content.ImageData = value; return this; }
+            public Builder SetImageData(CompletionContentImageData[]? value) { content.ImageData = value; return this; }
             public Builder SetIdSlot(int? value) { content.IdSlot = value; return this; }
             public Builder SetCachePrompt(bool? value) { content.CachePrompt = value; return this; }
             public Builder SetReturnTokens(bool? value) { content.ReturnTokens = value; return this; }
@@ -131,16 +131,16 @@ public partial class LlamaClient {
             public Builder SetTimingsPerToken(bool? value) { content.TimingsPerToken = value; return this; }
             public Builder SetPostSamplingProbs(bool? value) { content.PostSamplingProbs = value; return this; }
             public Builder SetResponseFields(string[]? value) { content.ResponseFields = value; return this; }
-            public Builder SetLoRA(CompletionContentLoRAElement[]? value) { content.LoRA = value; return this; }
+            public Builder SetLoRA(CompletionContentLoRA[]? value) { content.LoRA = value; return this; }
         }
     }
 
-    public class CompletionContentImageDataElement {
+    public class CompletionContentImageData {
         [JsonPropertyName("data")] public required string Data { get; set; }
         [JsonPropertyName("id")] public required int Id { get; set; }
     }
     
-    public class CompletionContentLoRAElement {
+    public class CompletionContentLoRA {
         [JsonPropertyName("id")] public required int Id { get; set; }
         [JsonPropertyName("scale")] public required float Scale { get; set; }
     }
