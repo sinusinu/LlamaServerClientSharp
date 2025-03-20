@@ -144,7 +144,13 @@ public partial class LlamaClient : IDisposable {
 
     // TODO: lora-adapters
 
-    // TODO: v1/models
+    public async Task<OAIModelsResponse> OAIModelsAsync() {
+        var response = await client.GetAsync(endpoint + "v1/models");
+        response.EnsureSuccessStatusCode();
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseJson = JsonSerializer.Deserialize<OAIModelsResponse>(responseContent)!;
+        return responseJson;
+    }
 
     // TODO: v1/completions
 

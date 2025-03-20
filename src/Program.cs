@@ -52,6 +52,11 @@ class Program {
         Console.WriteLine(detokenizedString);
 #endregion Detokenize
 
+#region OpenAI-compatible Model Info
+        var models = await llamaClient.OAIModelsAsync();
+        Console.WriteLine(models.Data[0].Id);
+#endregion OpenAI-compatible Model Info
+
 #region OpenAI-compatible Chat Completion
         var chatCompletionMessages = new LlamaClient.OAIChatCompletionMessage[] {
             new LlamaClient.OAIChatCompletionMessage(

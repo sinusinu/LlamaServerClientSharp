@@ -215,6 +215,30 @@ public partial class LlamaClient {
     }
 #endregion Tokenize
 
+#region OpenAI-compatible Model Info
+    public class OAIModelsResponse {
+        [JsonPropertyName("object")] public required string Object { get; set; }
+        [JsonPropertyName("data")] public required OAIModelsResponseData[] Data { get; set; }
+    }
+
+    public class OAIModelsResponseData {
+        [JsonPropertyName("id")] public required string Id { get; set; }
+        [JsonPropertyName("object")] public required string Object { get; set; }
+        [JsonPropertyName("created")] public required long Created { get; set; }
+        [JsonPropertyName("owned_by")] public required string OwnedBy { get; set; }
+        [JsonPropertyName("meta")] public required OAIModelsResponseDataMeta Meta { get; set; }
+    }
+
+    public class OAIModelsResponseDataMeta {
+        [JsonPropertyName("vocab_type")] public required int VocabType { get; set; }
+        [JsonPropertyName("n_vocab")] public required long NVocab { get; set; }
+        [JsonPropertyName("n_ctx_train")] public required long NCtxTrain { get; set; }
+        [JsonPropertyName("n_embd")] public required long NEmbd { get; set; }
+        [JsonPropertyName("n_params")] public required long NParams { get; set; }
+        [JsonPropertyName("size")] public required long Size { get; set; }
+    }
+#endregion OpenAI-compatible Model Info
+
 #region OpenAI-compatible Chat Completion
     public class OAIResponseFormat {
         [JsonPropertyName("type")] public required ResponseType Type { get; set; }
