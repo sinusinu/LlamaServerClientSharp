@@ -43,10 +43,15 @@ public partial class LlamaClient : IDisposable {
             }), Encoding.UTF8, "application/json"
         );
         var response = await client.PostAsync(endpoint + "completions", postContent);
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var responseJson = JsonSerializer.Deserialize<CompletionResponse>(responseContent)!;
-        return responseJson;
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<CompletionResponse>(responseContent)!;
+            return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
     }
     
     /// <summary>POST /completion, "stream": true</summary>
@@ -62,20 +67,25 @@ public partial class LlamaClient : IDisposable {
             Content = postContent
         };
         var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
-        var responseStream = await response.Content.ReadAsStreamAsync();
-        using (var reader = new StreamReader(responseStream)) {
-            while (!reader.EndOfStream) {
-                var line = await reader.ReadLineAsync();
-                if (line is null) continue;
-                line = line.Trim();
-                if (line.Length == 0) continue;
-                if (!line.StartsWith("data: ")) continue;
-                line = line.Substring(6);
-                if (line == "[DONE]") break;
-                var partialResult = JsonSerializer.Deserialize<CompletionResponse>(line)!;
-                yield return partialResult;
+        if (response.IsSuccessStatusCode) {
+            var responseStream = await response.Content.ReadAsStreamAsync();
+            using (var reader = new StreamReader(responseStream)) {
+                while (!reader.EndOfStream) {
+                    var line = await reader.ReadLineAsync();
+                    if (line is null) continue;
+                    line = line.Trim();
+                    if (line.Length == 0) continue;
+                    if (!line.StartsWith("data: ")) continue;
+                    line = line.Substring(6);
+                    if (line == "[DONE]") break;
+                    var partialResult = JsonSerializer.Deserialize<CompletionResponse>(line)!;
+                    yield return partialResult;
+                }
             }
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
         }
     }
 
@@ -89,15 +99,20 @@ public partial class LlamaClient : IDisposable {
             }), Encoding.UTF8, "application/json"
         );
         var response = await client.PostAsync(endpoint + "tokenize", postContent);
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var responseJson = JsonDocument.Parse(responseContent);
-        var tokensEnumerator = responseJson.RootElement.GetProperty("tokens").EnumerateArray();
-        List<int> tokensList = new();
-        foreach (var t in tokensEnumerator) {
-            tokensList.Add(t.GetInt32());
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonDocument.Parse(responseContent);
+            var tokensEnumerator = responseJson.RootElement.GetProperty("tokens").EnumerateArray();
+            List<int> tokensList = new();
+            foreach (var t in tokensEnumerator) {
+                tokensList.Add(t.GetInt32());
+            }
+            return tokensList.ToArray();
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
         }
-        return tokensList.ToArray();
     }
 
     /// <summary>POST /tokenize, "with_pieces": true</summary>
@@ -130,11 +145,16 @@ public partial class LlamaClient : IDisposable {
             }), Encoding.UTF8, "application/json"
         );
         var response = await client.PostAsync(endpoint + "detokenize", postContent);
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var responseJson = JsonDocument.Parse(responseContent);
-        var detokenized = responseJson.RootElement.GetProperty("content").GetString()!;
-        return detokenized;
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonDocument.Parse(responseContent);
+            var detokenized = responseJson.RootElement.GetProperty("content").GetString()!;
+            return detokenized;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
     }
 
     /// <summary>POST /apply-template</summary>
@@ -146,10 +166,15 @@ public partial class LlamaClient : IDisposable {
             }), Encoding.UTF8, "application/json"
         );
         var response = await client.PostAsync(endpoint + "apply-template", postContent);
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var responseJson = JsonSerializer.Deserialize<ApplyTemplateResponse>(responseContent)!;
-        return responseJson;
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<ApplyTemplateResponse>(responseContent)!;
+            return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
     }
 
     /// <summary>POST /embedding</summary>
@@ -161,10 +186,15 @@ public partial class LlamaClient : IDisposable {
             }), Encoding.UTF8, "application/json"
         );
         var response = await client.PostAsync(endpoint + "embedding", postContent);
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var responseJson = JsonSerializer.Deserialize<EmbeddingResponse[]>(responseContent)!;
-        return responseJson;
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<EmbeddingResponse[]>(responseContent)!;
+            return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
     }
 
     // TODO: reranking
@@ -182,10 +212,15 @@ public partial class LlamaClient : IDisposable {
     /// <summary>GET /lora-adapters</summary>
     public async Task<LoRAAdapterResponse[]> GetLoRAAdaptersAsync() {
         var response = await client.GetAsync(endpoint + "lora-adapters");
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var responseJson = JsonSerializer.Deserialize<LoRAAdapterResponse[]>(responseContent)!;
-        return responseJson;
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<LoRAAdapterResponse[]>(responseContent)!;
+            return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
     }
 
     /// <summary>POST /lora-adapters</summary>
@@ -197,16 +232,25 @@ public partial class LlamaClient : IDisposable {
             }), Encoding.UTF8, "application/json"
         );
         var response = await client.PostAsync(endpoint + "lora-adapters", postContent);
-        response.EnsureSuccessStatusCode(); // should crash out here if failed
+        if (!response.IsSuccessStatusCode) {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
     }
 
     /// <summary>GET /v1/models</summary>
     public async Task<OAIModelsResponse> OAIGetModelsAsync() {
         var response = await client.GetAsync(endpoint + "v1/models");
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var responseJson = JsonSerializer.Deserialize<OAIModelsResponse>(responseContent)!;
-        return responseJson;
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<OAIModelsResponse>(responseContent)!;
+            return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
     }
 
     // TODO: v1/completions
@@ -221,10 +265,15 @@ public partial class LlamaClient : IDisposable {
             }), Encoding.UTF8, "application/json"
         );
         var response = await client.PostAsync(endpoint + "v1/chat/completions", postContent);
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var responseJson = JsonSerializer.Deserialize<OAIChatCompletionResponse>(responseContent)!;
-        return responseJson;
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<OAIChatCompletionResponse>(responseContent)!;
+            return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
     }
 
     /// <summary>POST /v1/chat/completions, "stream": true</summary>
@@ -240,20 +289,25 @@ public partial class LlamaClient : IDisposable {
             Content = postContent
         };
         var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
-        var responseStream = await response.Content.ReadAsStreamAsync();
-        using (var reader = new StreamReader(responseStream)) {
-            while (!reader.EndOfStream) {
-                var line = await reader.ReadLineAsync();
-                if (line is null) continue;
-                line = line.Trim();
-                if (line.Length == 0) continue;
-                if (!line.StartsWith("data: ")) continue;
-                line = line.Substring(6);
-                if (line == "[DONE]") break;
-                var partialResult = JsonSerializer.Deserialize<OAIChatCompletionStreamResponse>(line)!;
-                yield return partialResult;
+        if (response.IsSuccessStatusCode) {
+            var responseStream = await response.Content.ReadAsStreamAsync();
+            using (var reader = new StreamReader(responseStream)) {
+                while (!reader.EndOfStream) {
+                    var line = await reader.ReadLineAsync();
+                    if (line is null) continue;
+                    line = line.Trim();
+                    if (line.Length == 0) continue;
+                    if (!line.StartsWith("data: ")) continue;
+                    line = line.Substring(6);
+                    if (line == "[DONE]") break;
+                    var partialResult = JsonSerializer.Deserialize<OAIChatCompletionStreamResponse>(line)!;
+                    yield return partialResult;
+                }
             }
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
         }
     }
 
@@ -267,16 +321,14 @@ public partial class LlamaClient : IDisposable {
             }), Encoding.UTF8, "application/json"
         );
         var response = await client.PostAsync(endpoint + "v1/embeddings", postContent);
-        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) {
-            var responseContent = await response.Content.ReadAsStringAsync();
-            if (responseContent.Contains("Pooling type 'none'")) throw new InvalidOperationException("Pooling type 'none' is not OAI compatible. Please use a different pooling type.");
-            else response.EnsureSuccessStatusCode();
-            return null!;   // shouldn't be reached
-        } else {
-            response.EnsureSuccessStatusCode();
+        if (response.IsSuccessStatusCode) {
             var responseContent = await response.Content.ReadAsStringAsync();
             var responseJson = JsonSerializer.Deserialize<OAIEmbeddingsFloatResponse>(responseContent)!;
             return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
         }
     }
 
@@ -290,16 +342,25 @@ public partial class LlamaClient : IDisposable {
             }), Encoding.UTF8, "application/json"
         );
         var response = await client.PostAsync(endpoint + "v1/embeddings", postContent);
-        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) {
-            var responseContent = await response.Content.ReadAsStringAsync();
-            if (responseContent.Contains("Pooling type 'none'")) throw new InvalidOperationException("Pooling type 'none' is not OAI compatible. Please use a different pooling type.");
-            else response.EnsureSuccessStatusCode();
-            return null!;   // shouldn't be reached
-        } else {
-            response.EnsureSuccessStatusCode();
+        if (response.IsSuccessStatusCode) {
             var responseContent = await response.Content.ReadAsStringAsync();
             var responseJson = JsonSerializer.Deserialize<OAIEmbeddingsBase64Response>(responseContent)!;
             return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
+    }
+
+    public class LlamaServerException : Exception {
+        public int LlamaErrorCode { get; private set; }
+        public string LlamaErrorMessage { get; private set; }
+        public string LlamaErrorType { get; private set; }
+        public LlamaServerException(int code, string message, string type) : base($"{type}: {message}") {
+            LlamaErrorCode = code;
+            LlamaErrorMessage = message;
+            LlamaErrorType = type;
         }
     }
 

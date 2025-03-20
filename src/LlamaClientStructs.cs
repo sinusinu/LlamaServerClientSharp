@@ -8,14 +8,17 @@ using System.Text.Json.Serialization;
 namespace LlamaServerClientSharp;
 
 public partial class LlamaClient {
-#region Health
-    public enum Health {
-        Unknown,
-        LoadingModel,
-        Error,
-        OK
+#region Error
+    public class Error {
+        [JsonPropertyName("error")] public required ErrorInnerError InnerError { get; set; }
     }
-#endregion Health
+
+    public class ErrorInnerError {
+        [JsonPropertyName("code")] public required int Code { get; set; }
+        [JsonPropertyName("message")] public required string Message { get; set; }
+        [JsonPropertyName("type")] public required string Type { get; set; }
+    }
+#endregion Error
 
 #region Commonly used classes
     public class Timings {
@@ -48,6 +51,15 @@ public partial class LlamaClient {
         public static Message Assistant(string content) => new Message("assistant", content);
     }
 #endregion Commonly used classes
+
+#region Health
+    public enum Health {
+        Unknown,
+        LoadingModel,
+        Error,
+        OK
+    }
+#endregion Health
 
 #region Completion
     public class CompletionRequest {
