@@ -287,6 +287,19 @@ public partial class LlamaClient {
     }
 #endregion Generate Embedding
 
+#region LoRA Adapters
+    public class LoRAAdapterResponse {
+        [JsonPropertyName("id")] public required int Id { get; set; }
+        [JsonPropertyName("path")] public required string Path { get; set; }
+        [JsonPropertyName("scale")] public required double Scale { get; set; }
+    }
+
+    public class LoRAAdapterContent {
+        [JsonPropertyName("id")] public required int Id { get; set; }
+        [JsonPropertyName("scale")] public required double Scale { get; set; }
+    }
+#endregion LoRA Adapters
+
 #region OpenAI-compatible Model Info
     public class OAIModelsResponse {
         [JsonPropertyName("object")] public required string Object { get; set; }

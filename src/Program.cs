@@ -74,6 +74,13 @@ class Program {
         Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
 #endregion Generate embedding
 
+#region LoRA Adapters
+        var loraAdapters = await llamaClient.GetLoRAAdaptersAsync();
+        Console.WriteLine(loraAdapters.Length);
+
+        await llamaClient.SetLoRAAdaptersAsync([]);
+#endregion LoRA Adapters
+
 #region OpenAI-compatible Model Info
         var models = await llamaClient.OAIModelsAsync();
         Console.WriteLine(models.Data[0].Id);

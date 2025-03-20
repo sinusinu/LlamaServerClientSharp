@@ -164,7 +164,23 @@ public partial class LlamaClient : IDisposable {
 
     // TODO: metrics
 
-    // TODO: lora-adapters
+    public async Task<LoRAAdapterResponse[]> GetLoRAAdaptersAsync() {
+        var response = await client.GetAsync(endpoint + "lora-adapters");
+        response.EnsureSuccessStatusCode();
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseJson = JsonSerializer.Deserialize<LoRAAdapterResponse[]>(responseContent)!;
+        return responseJson;
+    }
+
+    public async Task SetLoRAAdaptersAsync(LoRAAdapterContent[] content) {
+        using StringContent postContent = new(
+            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }), Encoding.UTF8, "application/json"
+        );
+        var response = await client.PostAsync(endpoint + "lora-adapters", postContent);
+        response.EnsureSuccessStatusCode(); // should crash out here if failed
+    }
 
     public async Task<OAIModelsResponse> OAIModelsAsync() {
         var response = await client.GetAsync(endpoint + "v1/models");
