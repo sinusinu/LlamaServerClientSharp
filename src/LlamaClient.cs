@@ -139,7 +139,18 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
 
-    // TODO: embedding
+    public async Task<EmbeddingResponse[]> EmbeddingAsync(EmbeddingContent content) {
+        using StringContent postContent = new(
+            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }), Encoding.UTF8, "application/json"
+        );
+        var response = await client.PostAsync(endpoint + "embedding", postContent);
+        response.EnsureSuccessStatusCode();
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseJson = JsonSerializer.Deserialize<EmbeddingResponse[]>(responseContent)!;
+        return responseJson;
+    }
 
     // TODO: reranking
 

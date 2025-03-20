@@ -65,6 +65,15 @@ class Program {
         Console.WriteLine(applyTemplateResponse.Prompt);
 #endregion Apply chat template
 
+#region Generate embedding
+        var embeddingContent = new EmbeddingContent.Builder()
+            .SetContent("Hello world!")
+            .Build();
+
+        var embeddingResponse = await llamaClient.EmbeddingAsync(embeddingContent);
+        Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
+#endregion Generate embedding
+
 #region OpenAI-compatible Model Info
         var models = await llamaClient.OAIModelsAsync();
         Console.WriteLine(models.Data[0].Id);

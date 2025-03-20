@@ -29,6 +29,11 @@ public partial class LlamaClient {
         [JsonPropertyName("predicted_per_second")] public double PredictedPerSecond { get; set; }
     }
 
+    public class ImageData {
+        [JsonPropertyName("data")] public required string Data { get; set; }
+        [JsonPropertyName("id")] public required int Id { get; set; }
+    }
+
     public class Message {
         public string role { get; set; }
         public string content { get; set; }
@@ -81,7 +86,7 @@ public partial class LlamaClient {
         [JsonPropertyName("n_probs")] public int? NProbs { get; set; }
         [JsonPropertyName("min_keep")] public int? MinKeep { get; set; }
         [JsonPropertyName("t_max_predict_ms")] public int? TMaxPredictMs { get; set; }
-        [JsonPropertyName("image_data")] public CompletionContentImageData[]? ImageData { get; set; }
+        [JsonPropertyName("image_data")] public ImageData[]? ImageData { get; set; }
         [JsonPropertyName("id_slot")] public int? IdSlot { get; set; }
         [JsonPropertyName("cache_prompt")] public bool? CachePrompt { get; set; }
         [JsonPropertyName("return_tokens")] public bool? ReturnTokens { get; set; }
@@ -138,7 +143,7 @@ public partial class LlamaClient {
             public Builder SetNProbs(int? value) { content.NProbs = value; return this; }
             public Builder SetMinKeep(int? value) { content.MinKeep = value; return this; }
             public Builder SetTMaxPredictMs(int? value) { content.TMaxPredictMs = value; return this; }
-            public Builder SetImageData(CompletionContentImageData[]? value) { content.ImageData = value; return this; }
+            public Builder SetImageData(ImageData[]? value) { content.ImageData = value; return this; }
             public Builder SetIdSlot(int? value) { content.IdSlot = value; return this; }
             public Builder SetCachePrompt(bool? value) { content.CachePrompt = value; return this; }
             public Builder SetReturnTokens(bool? value) { content.ReturnTokens = value; return this; }
@@ -148,11 +153,6 @@ public partial class LlamaClient {
             public Builder SetResponseFields(string[]? value) { content.ResponseFields = value; return this; }
             public Builder SetLoRA(CompletionContentLoRA[]? value) { content.LoRA = value; return this; }
         }
-    }
-
-    public class CompletionContentImageData {
-        [JsonPropertyName("data")] public required string Data { get; set; }
-        [JsonPropertyName("id")] public required int Id { get; set; }
     }
     
     public class CompletionContentLoRA {
@@ -256,6 +256,36 @@ public partial class LlamaClient {
         [JsonPropertyName("prompt")] public required string Prompt { get; set; }
     }
 #endregion Apply chat template
+
+#region Generate embedding
+    public class EmbeddingContent {
+        [JsonPropertyName("content")] public required string Content { get; set; }
+        [JsonPropertyName("image_data")] public ImageData[]? ImageData { get; set; }
+
+        public class Builder {
+            private EmbeddingContent content;
+
+            public Builder() {
+                content = new() {
+                    Content = null!
+                };
+            }
+
+            public EmbeddingContent Build() {
+                if (content.Content is null) throw new InvalidOperationException("Content is not set!");
+                return content;
+            }
+
+            public Builder SetContent(string value) { content.Content = value; return this; }
+            public Builder SetImageData(ImageData[]? value) { content.ImageData = value; return this; }
+        }
+    }
+
+    public class EmbeddingResponse {
+        [JsonPropertyName("index")] public required int Index { get; set; }
+        [JsonPropertyName("embedding")] public required double[][] Embedding { get; set; }
+    }
+#endregion Generate embedding
 
 #region OpenAI-compatible Model Info
     public class OAIModelsResponse {
