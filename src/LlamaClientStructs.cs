@@ -36,6 +36,10 @@ public partial class LlamaClient {
             this.role = role;
             this.content = content;
         }
+
+        public static Message System(string content) => new Message("system", content);
+        public static Message User(string content) => new Message("user", content);
+        public static Message Assistant(string content) => new Message("assistant", content);
     }
 #endregion Commonly used classes
 
