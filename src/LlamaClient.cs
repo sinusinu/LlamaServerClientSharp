@@ -14,6 +14,7 @@ public partial class LlamaClient : IDisposable {
         this.endpoint = endpoint.ToString();
     }
 
+    /// <summary>GET /health</summary>
     public async Task<Health> GetHealthAsync() {
         var response = await client.GetAsync(endpoint + "health");
         response.EnsureSuccessStatusCode();
@@ -32,6 +33,8 @@ public partial class LlamaClient : IDisposable {
         }
     }
     
+    /// <summary>POST /completion, "stream": false</summary>
+    /// <param name="request">Use <c>CompletionRequest.Builder</c>.</param>
     public async Task<CompletionResponse> CompletionAsync(CompletionRequest request) {
         request.Stream = false;
         using StringContent postContent = new(
@@ -46,6 +49,8 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
     
+    /// <summary>POST /completion, "stream": true</summary>
+    /// <param name="request">Use <c>CompletionRequest.Builder</c>.</param>
     public async IAsyncEnumerable<CompletionResponse> CompletionStreamAsync(CompletionRequest request) {
         request.Stream = true;
         using StringContent postContent = new(
@@ -74,6 +79,8 @@ public partial class LlamaClient : IDisposable {
         }
     }
 
+    /// <summary>POST /tokenize, "with_pieces": false</summary>
+    /// <param name="request">Use <c>TokenizeRequest.Builder</c>.</param>
     public async Task<int[]> TokenizeAsync(TokenizeRequest request) {
         request.WithPieces = false;
         using StringContent postContent = new(
@@ -93,6 +100,8 @@ public partial class LlamaClient : IDisposable {
         return tokensList.ToArray();
     }
 
+    /// <summary>POST /tokenize, "with_pieces": true</summary>
+    /// <param name="request">Use <c>TokenizeRequest.Builder</c>.</param>
     public async Task<TokenizeTokensWithPieces[]> TokenizeWithPiecesAsync(TokenizeRequest request) {
         request.WithPieces = true;
         using StringContent postContent = new(
@@ -112,6 +121,8 @@ public partial class LlamaClient : IDisposable {
         return tokensList.ToArray();
     }
     
+    /// <summary>POST /detokenize</summary>
+    /// <param name="request">Use <c>DetokenizeRequest.Builder</c>.</param>
     public async Task<string> DetokenizeAsync(DetokenizeRequest request) {
         using StringContent postContent = new(
             JsonSerializer.Serialize(request, new JsonSerializerOptions() {
@@ -126,6 +137,8 @@ public partial class LlamaClient : IDisposable {
         return detokenized;
     }
 
+    /// <summary>POST /apply-template</summary>
+    /// <param name="request">Use <c>ApplyTemplateRequest.Builder</c>.</param>
     public async Task<ApplyTemplateResponse> ApplyTemplateAsync(ApplyTemplateRequest request) {
         using StringContent postContent = new(
             JsonSerializer.Serialize(request, new JsonSerializerOptions() {
@@ -139,6 +152,8 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
 
+    /// <summary>POST /embedding</summary>
+    /// <param name="request">Use <c>EmbeddingRequest.Builder</c>.</param>
     public async Task<EmbeddingResponse[]> GetEmbeddingAsync(EmbeddingRequest request) {
         using StringContent postContent = new(
             JsonSerializer.Serialize(request, new JsonSerializerOptions() {
@@ -164,6 +179,7 @@ public partial class LlamaClient : IDisposable {
 
     // TODO: metrics
 
+    /// <summary>GET /lora-adapters</summary>
     public async Task<LoRAAdapterResponse[]> GetLoRAAdaptersAsync() {
         var response = await client.GetAsync(endpoint + "lora-adapters");
         response.EnsureSuccessStatusCode();
@@ -172,6 +188,8 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
 
+    /// <summary>POST /lora-adapters</summary>
+    /// <param name="request">An array of <c>LoRAAdapterRequest</c>.</param>
     public async Task SetLoRAAdaptersAsync(LoRAAdapterRequest[] request) {
         using StringContent postContent = new(
             JsonSerializer.Serialize(request, new JsonSerializerOptions() {
@@ -182,6 +200,7 @@ public partial class LlamaClient : IDisposable {
         response.EnsureSuccessStatusCode(); // should crash out here if failed
     }
 
+    /// <summary>GET /v1/models</summary>
     public async Task<OAIModelsResponse> OAIGetModelsAsync() {
         var response = await client.GetAsync(endpoint + "v1/models");
         response.EnsureSuccessStatusCode();
@@ -192,6 +211,8 @@ public partial class LlamaClient : IDisposable {
 
     // TODO: v1/completions
 
+    /// <summary>POST /v1/chat/completions, "stream": false</summary>
+    /// <param name="request">Use <c>OAIChatCompletionRequest.Builder</c>.</param>
     public async Task<OAIChatCompletionResponse> OAIChatCompletionAsync(OAIChatCompletionRequest request) {
         request.Stream = false;
         using StringContent postContent = new(
@@ -206,6 +227,8 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
 
+    /// <summary>POST /v1/chat/completions, "stream": true</summary>
+    /// <param name="request">Use <c>OAIChatCompletionRequest.Builder</c>.</param>
     public async IAsyncEnumerable<OAIChatCompletionStreamResponse> OAIChatCompletionStreamAsync(OAIChatCompletionRequest request) {
         request.Stream = true;
         using StringContent postContent = new(
@@ -234,6 +257,8 @@ public partial class LlamaClient : IDisposable {
         }
     }
 
+    /// <summary>POST /v1/embeddings, "encoding_format": "float"</summary>
+    /// <param name="request">Use <c>OAIEmbeddingsRequest.Builder</c>.</param>
     public async Task<OAIEmbeddingsFloatResponse> OAIEmbeddingsAsFloatAsync(OAIEmbeddingsRequest request) {
         request.EncodingFormat = OAIEmbeddingsRequest.OAIEmbeddingsRequestEncodingFormat.Float;
         using StringContent postContent = new(
@@ -255,6 +280,8 @@ public partial class LlamaClient : IDisposable {
         }
     }
 
+    /// <summary>POST /v1/embeddings, "encoding_format": "base64"</summary>
+    /// <param name="request">Use <c>OAIEmbeddingsRequest.Builder</c>.</param>
     public async Task<OAIEmbeddingsBase64Response> OAIEmbeddingsAsBase64Async(OAIEmbeddingsRequest request) {
         request.EncodingFormat = OAIEmbeddingsRequest.OAIEmbeddingsRequestEncodingFormat.Base64;
         using StringContent postContent = new(
