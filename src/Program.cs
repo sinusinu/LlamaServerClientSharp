@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Schema;
 
+using static LlamaServerClientSharp.LlamaClient;
+
 namespace LlamaServerClientSharp;
 
 class Program {
@@ -14,7 +16,7 @@ class Program {
 #region Completion
         // Gemma 3 specific format
         var prompt = "<start_of_turn>user\nYou are a helpful assistant\n\nHello<end_of_turn>\n<start_of_turn>model\n";
-        var completionContent = new LlamaClient.CompletionContent.Builder()
+        var completionContent = new CompletionContent.Builder()
             .SetPrompt(prompt)
             .Build();
 
@@ -31,7 +33,7 @@ class Program {
 
 #region Tokenize
         var tokenizeString = "Hello world!";
-        var tokenizeContent = new LlamaClient.TokenizeContent.Builder()
+        var tokenizeContent = new TokenizeContent.Builder()
             .SetContent(tokenizeString)
             .Build();
 
@@ -44,7 +46,7 @@ class Program {
 #region Detokenize
         // Gemma 3 specific tokens
         var detokenizeTokens = new int[] { 9259, 1902, 236888 };
-        var detokenizeContent = new LlamaClient.DetokenizeContent.Builder()
+        var detokenizeContent = new DetokenizeContent.Builder()
             .SetTokens(detokenizeTokens)
             .Build();
 
@@ -53,9 +55,9 @@ class Program {
 #endregion Detokenize
 
 #region Apply chat template
-        var applyTemplateContent = new LlamaClient.ApplyTemplateContent.Builder()
+        var applyTemplateContent = new ApplyTemplateContent.Builder()
             .SetMessages([
-                LlamaClient.Message.User("Hello!")
+                Message.User("Hello!")
             ])
             .Build();
 
@@ -69,15 +71,15 @@ class Program {
 #endregion OpenAI-compatible Model Info
 
 #region OpenAI-compatible Chat Completion
-        var chatCompletionMessages = new LlamaClient.Message[] {
-            LlamaClient.Message.System("Write an answer to the user's message, and evaluate if user's message was friendly. Output must follow the JSON schema given below.\n\n# JSON Schema\n```json\n{ \"answer\": string, \"positive\": boolean }\n```\n- answer: Answer to the user's message\n- positive: true if user's message was positive, false if not"),
-            LlamaClient.Message.User("Nice to meet you!"),
+        var chatCompletionMessages = new Message[] {
+            Message.System("Write an answer to the user's message, and evaluate if user's message was friendly. Output must follow the JSON schema given below.\n\n# JSON Schema\n```json\n{ \"answer\": string, \"positive\": boolean }\n```\n- answer: Answer to the user's message\n- positive: true if user's message was positive, false if not"),
+            Message.User("Nice to meet you!"),
         };
 
-        var chatCompletionContent = new LlamaClient.OAIChatCompletionContent.Builder()
+        var chatCompletionContent = new OAIChatCompletionContent.Builder()
             .SetMessages(chatCompletionMessages)
             .SetResponseFormat(
-                LlamaClient.OAIResponseFormat.ResponseType.JsonSchema,
+                OAIResponseFormat.ResponseType.JsonSchema,
                 JsonSerializerOptions.Default.GetJsonSchemaAsNode(typeof(AnswerSchema))
             )
             .Build();
