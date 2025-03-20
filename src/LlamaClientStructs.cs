@@ -428,4 +428,66 @@ public partial class LlamaClient {
         [JsonPropertyName("content")] public string? Content { get; set; }
     }
 #endregion OpenAI-compatible Chat Completion
+
+#region OpenAI-compatible Create Embeddings
+    public class OAIEmbeddingsContent {
+        [JsonPropertyName("input")] public required string Input { get; set; }
+        [JsonPropertyName("model")] public string? Model { get; set; }  // seems like unused and can be omitted on llama.cpp server
+        [JsonPropertyName("encoding_format")] public OAIEmbeddingsContentEncodingFormat? EncodingFormat { get; set; }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public enum OAIEmbeddingsContentEncodingFormat {
+            [JsonStringEnumMemberName("float")] Float,
+            [JsonStringEnumMemberName("base64")] Base64,
+        }
+
+        public class Builder {
+            private OAIEmbeddingsContent content;
+
+            public Builder() {
+                content = new() {
+                    Input = null!,
+                };
+            }
+
+            public OAIEmbeddingsContent Build() {
+                if (content.Input is null) throw new InvalidOperationException("Input is not set!");
+                return content;
+            }
+
+            public Builder SetInput(string value) { content.Input = value; return this; }
+        }
+    }
+
+    public class OAIEmbeddingsFloatResponse {
+        [JsonPropertyName("object")] public required string Object { get; set; }
+        [JsonPropertyName("data")] public required OAIEmbeddingsFloatResponseData[] Data { get; set; }
+        [JsonPropertyName("model")] public required string Model { get; set; }
+        [JsonPropertyName("usage")] public required OAIEmbeddingsResponseUsage Usage { get; set; }
+    }
+
+    public class OAIEmbeddingsFloatResponseData {
+        [JsonPropertyName("object")] public required string Object { get; set; }
+        [JsonPropertyName("embedding")] public required double[] Embedding { get; set; }
+        [JsonPropertyName("index")] public required int Index { get; set; }
+    }
+
+    public class OAIEmbeddingsBase64Response {
+        [JsonPropertyName("object")] public required string Object { get; set; }
+        [JsonPropertyName("data")] public required OAIEmbeddingsBase64ResponseData[] Data { get; set; }
+        [JsonPropertyName("model")] public required string Model { get; set; }
+        [JsonPropertyName("usage")] public required OAIEmbeddingsResponseUsage Usage { get; set; }
+    }
+
+    public class OAIEmbeddingsBase64ResponseData {
+        [JsonPropertyName("object")] public required string Object { get; set; }
+        [JsonPropertyName("embedding")] public required string Embedding { get; set; }
+        [JsonPropertyName("index")] public required int Index { get; set; }
+    }
+
+    public class OAIEmbeddingsResponseUsage {
+        [JsonPropertyName("prompt_tokens")] public required int PromptTokens { get; set; }
+        [JsonPropertyName("total_tokens")] public required int TotalTokens { get; set; }
+    }
+#endregion OpenAI-compatible Create Embeddings
 }

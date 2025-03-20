@@ -176,8 +176,6 @@ public partial class LlamaClient : IDisposable {
 
     // TODO: v1/completions
 
-    // TODO: v1/embeddings
-
     public async Task<OAIChatCompletionResponse> OAIChatCompletionAsync(OAIChatCompletionContent content) {
         content.Stream = false;
         using StringContent postContent = new(
@@ -217,6 +215,46 @@ public partial class LlamaClient : IDisposable {
                 var partialResult = JsonSerializer.Deserialize<OAIChatCompletionStreamResponse>(line)!;
                 yield return partialResult;
             }
+        }
+    }
+
+    public async Task<OAIEmbeddingsFloatResponse> OAIEmbeddingsAsFloatAsync(OAIEmbeddingsContent content) {
+        content.EncodingFormat = OAIEmbeddingsContent.OAIEmbeddingsContentEncodingFormat.Float;
+        using StringContent postContent = new(
+            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }), Encoding.UTF8, "application/json"
+        );
+        var response = await client.PostAsync(endpoint + "v1/embeddings", postContent);
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            if (responseContent.Contains("Pooling type 'none'")) throw new InvalidOperationException("Pooling type 'none' is not OAI compatible. Please use a different pooling type.");
+            else throw new HttpRequestException($"Response status code does not indicate success: 400 (Bad Request)");
+        } else {
+            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<OAIEmbeddingsFloatResponse>(responseContent)!;
+            return responseJson;
+        }
+    }
+
+    public async Task<OAIEmbeddingsBase64Response> OAIEmbeddingsAsBase64Async(OAIEmbeddingsContent content) {
+        content.EncodingFormat = OAIEmbeddingsContent.OAIEmbeddingsContentEncodingFormat.Base64;
+        using StringContent postContent = new(
+            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }), Encoding.UTF8, "application/json"
+        );
+        var response = await client.PostAsync(endpoint + "v1/embeddings", postContent);
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            if (responseContent.Contains("Pooling type 'none'")) throw new InvalidOperationException("Pooling type 'none' is not OAI compatible. Please use a different pooling type.");
+            else throw new HttpRequestException($"Response status code does not indicate success: 400 (Bad Request)");
+        } else {
+            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<OAIEmbeddingsBase64Response>(responseContent)!;
+            return responseJson;
         }
     }
 

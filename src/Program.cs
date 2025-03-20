@@ -102,8 +102,20 @@ class Program {
             if (chatCompletionPartialResponse.FirstChoice.Delta is not null) Console.Write(chatCompletionPartialResponse.FirstChoice.Delta.Content);
         }
         Console.WriteLine();
-    }
 #endregion OpenAI-compatible Chat Completion
+
+#region OpenAI-compatible Create Embeddings
+        var oaiEmbeddingsContent = new OAIEmbeddingsContent.Builder()
+            .SetInput("Hello world!")
+            .Build();
+
+        var oaiEmbeddingsResponse = await llamaClient.OAIEmbeddingsAsFloatAsync(oaiEmbeddingsContent);
+        Console.WriteLine(oaiEmbeddingsResponse.Data[0].Embedding[0]);
+
+        var oaiEmbeddingsBResponse = await llamaClient.OAIEmbeddingsAsBase64Async(oaiEmbeddingsContent);
+        Console.WriteLine(oaiEmbeddingsBResponse.Data[0].Embedding.Substring(0, 5));
+#endregion OpenAI-compatible Create Embeddings
+    }
 
     record AnswerSchema(string answer, bool positive);
 }
