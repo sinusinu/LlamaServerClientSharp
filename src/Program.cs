@@ -16,16 +16,16 @@ class Program {
 #region Completion
         // Gemma 3 specific format
         var prompt = "<start_of_turn>user\nYou are a helpful assistant\n\nHello<end_of_turn>\n<start_of_turn>model\n";
-        var completionContent = new CompletionContent.Builder()
+        var completionRequest = new CompletionRequest.Builder()
             .SetPrompt(prompt)
             .Build();
 
         // immediate
-        var completionResponse = await llamaClient.CompletionAsync(completionContent);
+        var completionResponse = await llamaClient.CompletionAsync(completionRequest);
         Console.WriteLine(completionResponse.Content);
 
         // streaming
-        await foreach (var partialResponse in llamaClient.CompletionStreamAsync(completionContent)) {
+        await foreach (var partialResponse in llamaClient.CompletionStreamAsync(completionRequest)) {
             Console.Write(partialResponse.Content);
         }
         Console.WriteLine();
@@ -33,11 +33,11 @@ class Program {
 
 #region Tokenize
         var tokenizeString = "Hello world!";
-        var tokenizeContent = new TokenizeContent.Builder()
+        var tokenizeRequest = new TokenizeRequest.Builder()
             .SetContent(tokenizeString)
             .Build();
 
-        var tokens = await llamaClient.TokenizeAsync(tokenizeContent);
+        var tokens = await llamaClient.TokenizeAsync(tokenizeRequest);
         Console.Write('[');
         foreach (var token in tokens) Console.Write($"{token},");
         Console.WriteLine(']');
@@ -46,31 +46,31 @@ class Program {
 #region Detokenize
         // Gemma 3 specific tokens
         var detokenizeTokens = new int[] { 9259, 1902, 236888 };
-        var detokenizeContent = new DetokenizeContent.Builder()
+        var detokenizeRequest = new DetokenizeRequest.Builder()
             .SetTokens(detokenizeTokens)
             .Build();
 
-        var detokenizedString = await llamaClient.DetokenizeAsync(detokenizeContent);
+        var detokenizedString = await llamaClient.DetokenizeAsync(detokenizeRequest);
         Console.WriteLine(detokenizedString);
 #endregion Detokenize
 
 #region Apply Chat Template
-        var applyTemplateContent = new ApplyTemplateContent.Builder()
+        var applyTemplateRequest = new ApplyTemplateRequest.Builder()
             .SetMessages([
                 Message.User("Hello!")
             ])
             .Build();
 
-        var applyTemplateResponse = await llamaClient.ApplyTemplateAsync(applyTemplateContent);
+        var applyTemplateResponse = await llamaClient.ApplyTemplateAsync(applyTemplateRequest);
         Console.WriteLine(applyTemplateResponse.Prompt);
 #endregion Apply Chat Template
 
 #region Generate Embedding
-        var embeddingContent = new EmbeddingContent.Builder()
+        var embeddingRequest = new EmbeddingRequest.Builder()
             .SetContent("Hello world!")
             .Build();
 
-        var embeddingResponse = await llamaClient.GetEmbeddingAsync(embeddingContent);
+        var embeddingResponse = await llamaClient.GetEmbeddingAsync(embeddingRequest);
         Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
 #endregion Generate Embedding
 
@@ -92,7 +92,7 @@ class Program {
             Message.User("Nice to meet you!"),
         };
 
-        var chatCompletionContent = new OAIChatCompletionContent.Builder()
+        var chatCompletionRequest = new OAIChatCompletionRequest.Builder()
             .SetMessages(chatCompletionMessages)
             .SetResponseFormat(
                 OAIResponseFormat.ResponseType.JsonSchema,
@@ -101,25 +101,25 @@ class Program {
             .Build();
 
         // immediate
-        var chatCompletionImmediateResponse = await llamaClient.OAIChatCompletionAsync(chatCompletionContent);
+        var chatCompletionImmediateResponse = await llamaClient.OAIChatCompletionAsync(chatCompletionRequest);
         Console.WriteLine(chatCompletionImmediateResponse.FirstChoice.Message.Content);
 
         // streaming
-        await foreach (var chatCompletionPartialResponse in llamaClient.OAIChatCompletionStreamAsync(chatCompletionContent)) {
+        await foreach (var chatCompletionPartialResponse in llamaClient.OAIChatCompletionStreamAsync(chatCompletionRequest)) {
             if (chatCompletionPartialResponse.FirstChoice.Delta is not null) Console.Write(chatCompletionPartialResponse.FirstChoice.Delta.Content);
         }
         Console.WriteLine();
 #endregion OpenAI-compatible Chat Completion
 
 #region OpenAI-compatible Create Embeddings
-        var oaiEmbeddingsContent = new OAIEmbeddingsContent.Builder()
+        var oaiEmbeddingsRequest = new OAIEmbeddingsRequest.Builder()
             .SetInput("Hello world!")
             .Build();
 
-        var oaiEmbeddingsResponse = await llamaClient.OAIEmbeddingsAsFloatAsync(oaiEmbeddingsContent);
+        var oaiEmbeddingsResponse = await llamaClient.OAIEmbeddingsAsFloatAsync(oaiEmbeddingsRequest);
         Console.WriteLine(oaiEmbeddingsResponse.Data[0].Embedding[0]);
 
-        var oaiEmbeddingsBResponse = await llamaClient.OAIEmbeddingsAsBase64Async(oaiEmbeddingsContent);
+        var oaiEmbeddingsBResponse = await llamaClient.OAIEmbeddingsAsBase64Async(oaiEmbeddingsRequest);
         Console.WriteLine(oaiEmbeddingsBResponse.Data[0].Embedding.Substring(0, 5));
 #endregion OpenAI-compatible Create Embeddings
     }

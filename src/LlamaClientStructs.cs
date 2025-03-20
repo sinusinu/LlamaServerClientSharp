@@ -50,7 +50,7 @@ public partial class LlamaClient {
 #endregion Commonly used classes
 
 #region Completion
-    public class CompletionContent {
+    public class CompletionRequest {
         [JsonPropertyName("prompt")] public required string Prompt { get; set; }
         [JsonPropertyName("temperature")] public float? Temperature { get; set; }
         [JsonPropertyName("dynatemp_range")] public float? DynatempRange { get; set; }
@@ -94,68 +94,68 @@ public partial class LlamaClient {
         [JsonPropertyName("timings_per_token")] public bool? TimingsPerToken { get; set; }
         [JsonPropertyName("post_sampling_probs")] public bool? PostSamplingProbs { get; set; }
         [JsonPropertyName("response_fields")] public string[]? ResponseFields { get; set; }
-        [JsonPropertyName("lora")] public CompletionContentLoRA[]? LoRA { get; set; }
+        [JsonPropertyName("lora")] public CompletionRequestLoRA[]? LoRA { get; set; }
 
         public class Builder {
-            private CompletionContent content;
+            private CompletionRequest request;
 
             public Builder() {
-                content = new() {
+                request = new() {
                     Prompt = null!
                 };
             }
 
-            public CompletionContent Build() {
-                if (content.Prompt is null) throw new InvalidOperationException("Prompt is not set!");
-                return content;
+            public CompletionRequest Build() {
+                if (request.Prompt is null) throw new InvalidOperationException("Prompt is not set!");
+                return request;
             }
 
-            public Builder SetPrompt(string value) { content.Prompt = value; return this; }
-            public Builder SetTemperature(float? value) { content.Temperature = value; return this; }
-            public Builder SetDynatempRange(float? value) { content.DynatempRange = value; return this; }
-            public Builder SetDynatempExponent(float? value) { content.DynatempExponent = value; return this; }
-            public Builder SetTopK(int? value) { content.TopK = value; return this; }
-            public Builder SetTopP(float? value) { content.TopP = value; return this; }
-            public Builder SetMinP(float? value) { content.MinP = value; return this; }
-            public Builder SetNPredict(int? value) { content.NPredict = value; return this; }
-            public Builder SetNIndent(int? value) { content.NIndent = value; return this; }
-            public Builder SetNKeep(int? value) { content.NKeep = value; return this; }
-            public Builder SetStop(string[]? value) { content.Stop = value; return this; }
-            public Builder SetTypicalP(float? value) { content.TypicalP = value; return this; }
-            public Builder SetRepeatPenalty(float? value) { content.RepeatPenalty = value; return this; }
-            public Builder SetRepeatLastN(int? value) { content.RepeatLastN = value; return this; }
-            public Builder SetPresencePenalty(float? value) { content.PresencePenalty = value; return this; }
-            public Builder SetFrequencyPenalty(float? value) { content.FrequencyPenalty = value; return this; }
-            public Builder SetDryMultiplier(float? value) { content.DryMultiplier = value; return this; }
-            public Builder SetDryBase(float? value) { content.DryBase = value; return this; }
-            public Builder SetDryAllowedLength(int? value) { content.DryAllowedLength = value; return this; }
-            public Builder SetDryPenaltyLastN(int? value) { content.DryPenaltyLastN = value; return this; }
-            public Builder SetDrySequenceBreakers(string[]? value) { content.DrySequenceBreakers = value; return this; }
-            public Builder SetXtcProbability(float? value) { content.XtcProbability = value; return this; }
-            public Builder SetXtcThreshold(float? value) { content.XtcThreshold = value; return this; }
-            public Builder SetMirostat(int? value) { content.Mirostat = value; return this; }
-            public Builder SetMirostatTau(float? value) { content.MirostatTau = value; return this; }
-            public Builder SetMirostatEta(float? value) { content.MirostatEta = value; return this; }
-            public Builder SetGrammar(string? value) { content.Grammar = value; return this; }
-            public Builder SetJsonSchema(JsonNode? value) { content.JsonSchema = value; return this; }
-            public Builder SetSeed(int? value) { content.Seed = value; return this; }
-            public Builder SetIgnoreEos(bool? value) { content.IgnoreEos = value; return this; }
-            public Builder SetNProbs(int? value) { content.NProbs = value; return this; }
-            public Builder SetMinKeep(int? value) { content.MinKeep = value; return this; }
-            public Builder SetTMaxPredictMs(int? value) { content.TMaxPredictMs = value; return this; }
-            public Builder SetImageData(ImageData[]? value) { content.ImageData = value; return this; }
-            public Builder SetIdSlot(int? value) { content.IdSlot = value; return this; }
-            public Builder SetCachePrompt(bool? value) { content.CachePrompt = value; return this; }
-            public Builder SetReturnTokens(bool? value) { content.ReturnTokens = value; return this; }
-            public Builder SetSamplers(string[]? value) { content.Samplers = value; return this; }
-            public Builder SetTimingsPerToken(bool? value) { content.TimingsPerToken = value; return this; }
-            public Builder SetPostSamplingProbs(bool? value) { content.PostSamplingProbs = value; return this; }
-            public Builder SetResponseFields(string[]? value) { content.ResponseFields = value; return this; }
-            public Builder SetLoRA(CompletionContentLoRA[]? value) { content.LoRA = value; return this; }
+            public Builder SetPrompt(string value) { request.Prompt = value; return this; }
+            public Builder SetTemperature(float? value) { request.Temperature = value; return this; }
+            public Builder SetDynatempRange(float? value) { request.DynatempRange = value; return this; }
+            public Builder SetDynatempExponent(float? value) { request.DynatempExponent = value; return this; }
+            public Builder SetTopK(int? value) { request.TopK = value; return this; }
+            public Builder SetTopP(float? value) { request.TopP = value; return this; }
+            public Builder SetMinP(float? value) { request.MinP = value; return this; }
+            public Builder SetNPredict(int? value) { request.NPredict = value; return this; }
+            public Builder SetNIndent(int? value) { request.NIndent = value; return this; }
+            public Builder SetNKeep(int? value) { request.NKeep = value; return this; }
+            public Builder SetStop(string[]? value) { request.Stop = value; return this; }
+            public Builder SetTypicalP(float? value) { request.TypicalP = value; return this; }
+            public Builder SetRepeatPenalty(float? value) { request.RepeatPenalty = value; return this; }
+            public Builder SetRepeatLastN(int? value) { request.RepeatLastN = value; return this; }
+            public Builder SetPresencePenalty(float? value) { request.PresencePenalty = value; return this; }
+            public Builder SetFrequencyPenalty(float? value) { request.FrequencyPenalty = value; return this; }
+            public Builder SetDryMultiplier(float? value) { request.DryMultiplier = value; return this; }
+            public Builder SetDryBase(float? value) { request.DryBase = value; return this; }
+            public Builder SetDryAllowedLength(int? value) { request.DryAllowedLength = value; return this; }
+            public Builder SetDryPenaltyLastN(int? value) { request.DryPenaltyLastN = value; return this; }
+            public Builder SetDrySequenceBreakers(string[]? value) { request.DrySequenceBreakers = value; return this; }
+            public Builder SetXtcProbability(float? value) { request.XtcProbability = value; return this; }
+            public Builder SetXtcThreshold(float? value) { request.XtcThreshold = value; return this; }
+            public Builder SetMirostat(int? value) { request.Mirostat = value; return this; }
+            public Builder SetMirostatTau(float? value) { request.MirostatTau = value; return this; }
+            public Builder SetMirostatEta(float? value) { request.MirostatEta = value; return this; }
+            public Builder SetGrammar(string? value) { request.Grammar = value; return this; }
+            public Builder SetJsonSchema(JsonNode? value) { request.JsonSchema = value; return this; }
+            public Builder SetSeed(int? value) { request.Seed = value; return this; }
+            public Builder SetIgnoreEos(bool? value) { request.IgnoreEos = value; return this; }
+            public Builder SetNProbs(int? value) { request.NProbs = value; return this; }
+            public Builder SetMinKeep(int? value) { request.MinKeep = value; return this; }
+            public Builder SetTMaxPredictMs(int? value) { request.TMaxPredictMs = value; return this; }
+            public Builder SetImageData(ImageData[]? value) { request.ImageData = value; return this; }
+            public Builder SetIdSlot(int? value) { request.IdSlot = value; return this; }
+            public Builder SetCachePrompt(bool? value) { request.CachePrompt = value; return this; }
+            public Builder SetReturnTokens(bool? value) { request.ReturnTokens = value; return this; }
+            public Builder SetSamplers(string[]? value) { request.Samplers = value; return this; }
+            public Builder SetTimingsPerToken(bool? value) { request.TimingsPerToken = value; return this; }
+            public Builder SetPostSamplingProbs(bool? value) { request.PostSamplingProbs = value; return this; }
+            public Builder SetResponseFields(string[]? value) { request.ResponseFields = value; return this; }
+            public Builder SetLoRA(CompletionRequestLoRA[]? value) { request.LoRA = value; return this; }
         }
     }
     
-    public class CompletionContentLoRA {
+    public class CompletionRequestLoRA {
         [JsonPropertyName("id")] public required int Id { get; set; }
         [JsonPropertyName("scale")] public required float Scale { get; set; }
     }
@@ -177,27 +177,27 @@ public partial class LlamaClient {
 #endregion Completion
 
 #region Tokenize
-    public class TokenizeContent {
+    public class TokenizeRequest {
         [JsonPropertyName("content")] public required string Content { get; set; }
         [JsonPropertyName("add_special")] public bool AddSpecial { get; set; }
         [JsonPropertyName("with_pieces")] public bool WithPieces { get; set; }
 
         public class Builder {
-            TokenizeContent content;
+            TokenizeRequest request;
 
             public Builder() {
-                content = new() {
+                request = new() {
                     Content = null!,
                 };
             }
 
-            public TokenizeContent Build() {
-                if (content.Content is null) throw new InvalidOperationException("Content is not set!");
-                return content;
+            public TokenizeRequest Build() {
+                if (request.Content is null) throw new InvalidOperationException("Content is not set!");
+                return request;
             }
 
-            public Builder SetContent(string value) { content.Content = value; return this; }
-            public Builder SetAddSpecial(bool value) { content.AddSpecial = value; return this; }
+            public Builder SetContent(string value) { request.Content = value; return this; }
+            public Builder SetAddSpecial(bool value) { request.AddSpecial = value; return this; }
         }
     }
 
@@ -208,47 +208,47 @@ public partial class LlamaClient {
 #endregion Tokenize
 
 #region Detokenize
-    public class DetokenizeContent {
+    public class DetokenizeRequest {
         [JsonPropertyName("tokens")] public required int[] Tokens { get; set; }
 
         public class Builder {
-            DetokenizeContent content;
+            DetokenizeRequest request;
 
             public Builder() {
-                content = new() {
+                request = new() {
                     Tokens = null!
                 };
             }
 
-            public DetokenizeContent Build() {
-                if (content.Tokens is null) throw new InvalidOperationException("Tokens are not set!");
-                return content;
+            public DetokenizeRequest Build() {
+                if (request.Tokens is null) throw new InvalidOperationException("Tokens are not set!");
+                return request;
             }
 
-            public Builder SetTokens(int[] value) { content.Tokens = value; return this; }
+            public Builder SetTokens(int[] value) { request.Tokens = value; return this; }
         }
     }
 #endregion Detokenize
 
 #region Apply Chat Template
-    public class ApplyTemplateContent {
+    public class ApplyTemplateRequest {
         [JsonPropertyName("messages")] public required Message[] Messages { get; set; }
 
         public class Builder {
-            private ApplyTemplateContent content;
+            private ApplyTemplateRequest request;
 
             public Builder() {
-                content = new() {
+                request = new() {
                     Messages = null!
                 };
             }
 
-            public ApplyTemplateContent Build() {
-                if (content.Messages is null) throw new InvalidOperationException("Messages are not set!");
-                return content;
+            public ApplyTemplateRequest Build() {
+                if (request.Messages is null) throw new InvalidOperationException("Messages are not set!");
+                return request;
             }
 
-            public Builder SetMessages(Message[] value) { content.Messages = value; return this; }
+            public Builder SetMessages(Message[] value) { request.Messages = value; return this; }
         }
     }
 
@@ -258,26 +258,26 @@ public partial class LlamaClient {
 #endregion Apply Chat Template
 
 #region Generate Embedding
-    public class EmbeddingContent {
+    public class EmbeddingRequest {
         [JsonPropertyName("content")] public required string Content { get; set; }
         [JsonPropertyName("image_data")] public ImageData[]? ImageData { get; set; }
 
         public class Builder {
-            private EmbeddingContent content;
+            private EmbeddingRequest request;
 
             public Builder() {
-                content = new() {
+                request = new() {
                     Content = null!
                 };
             }
 
-            public EmbeddingContent Build() {
-                if (content.Content is null) throw new InvalidOperationException("Content is not set!");
-                return content;
+            public EmbeddingRequest Build() {
+                if (request.Content is null) throw new InvalidOperationException("Content is not set!");
+                return request;
             }
 
-            public Builder SetContent(string value) { content.Content = value; return this; }
-            public Builder SetImageData(ImageData[]? value) { content.ImageData = value; return this; }
+            public Builder SetContent(string value) { request.Content = value; return this; }
+            public Builder SetImageData(ImageData[]? value) { request.ImageData = value; return this; }
         }
     }
 
@@ -294,7 +294,7 @@ public partial class LlamaClient {
         [JsonPropertyName("scale")] public required double Scale { get; set; }
     }
 
-    public class LoRAAdapterContent {
+    public class LoRAAdapterRequest {
         [JsonPropertyName("id")] public required int Id { get; set; }
         [JsonPropertyName("scale")] public required double Scale { get; set; }
     }
@@ -339,7 +339,7 @@ public partial class LlamaClient {
         public static JsonNode SchemaOf<T>() => JsonSerializerOptions.Default.GetJsonSchemaAsNode(typeof(T));
     }
 
-    public class OAIChatCompletionContent {
+    public class OAIChatCompletionRequest {
         [JsonPropertyName("model")] public string? Model { get; set; }  // seems like unused and can be omitted on llama.cpp server
         [JsonPropertyName("messages")] public required Message[] Messages { get; set; }
         [JsonPropertyName("temperature")] public float? Temperature { get; set; }
@@ -356,32 +356,32 @@ public partial class LlamaClient {
         [JsonPropertyName("stream")] public bool? Stream { get; set; }
 
         public class Builder {
-            private OAIChatCompletionContent content;
+            private OAIChatCompletionRequest request;
 
             public Builder() {
-                content = new OAIChatCompletionContent() {
+                request = new OAIChatCompletionRequest() {
                     Model = null,
                     Messages = null!,
                 };
             }
 
-            public OAIChatCompletionContent Build() {
-                if (content.Messages is null) throw new InvalidOperationException("Messages are not set!");
-                return content;
+            public OAIChatCompletionRequest Build() {
+                if (request.Messages is null) throw new InvalidOperationException("Messages are not set!");
+                return request;
             }
 
-            public Builder SetMessages(Message[] value) { content.Messages = value; return this; }
-            public Builder SetTemperature(float? value) { content.Temperature = value; return this; }
-            public Builder SetSeed(int value) { content.Seed = value; return this; }
-            public Builder SetResponseFormat(OAIResponseFormat.ResponseType type, JsonNode? schema) { content.ResponseFormat = new OAIResponseFormat() { Type = type, Schema = schema }; return this; }
-            public Builder SetFrequencyPenalty(float value) { content.FrequencyPenalty = value; return this; }
-            public Builder SetMaxCompletionTokens(int value) { content.MaxCompletionTokens = value; return this; }
-            public Builder SetN(int value) { content.N = value; return this; }
-            public Builder SetLogprobs(bool value) { content.Logprobs = value; return this; }
-            public Builder SetTopLogprobs(int value) { content.TopLogprobs = value; return this; }
-            public Builder SetPresencePenalty(float value) { content.PresencePenalty = value; return this; }
-            public Builder SetStop(string[] value) { content.Stop = value; return this; }
-            public Builder SetTopP(float value) { content.TopP = value; return this; }
+            public Builder SetMessages(Message[] value) { request.Messages = value; return this; }
+            public Builder SetTemperature(float? value) { request.Temperature = value; return this; }
+            public Builder SetSeed(int value) { request.Seed = value; return this; }
+            public Builder SetResponseFormat(OAIResponseFormat.ResponseType type, JsonNode? schema) { request.ResponseFormat = new OAIResponseFormat() { Type = type, Schema = schema }; return this; }
+            public Builder SetFrequencyPenalty(float value) { request.FrequencyPenalty = value; return this; }
+            public Builder SetMaxCompletionTokens(int value) { request.MaxCompletionTokens = value; return this; }
+            public Builder SetN(int value) { request.N = value; return this; }
+            public Builder SetLogprobs(bool value) { request.Logprobs = value; return this; }
+            public Builder SetTopLogprobs(int value) { request.TopLogprobs = value; return this; }
+            public Builder SetPresencePenalty(float value) { request.PresencePenalty = value; return this; }
+            public Builder SetStop(string[] value) { request.Stop = value; return this; }
+            public Builder SetTopP(float value) { request.TopP = value; return this; }
         }
     }
 
@@ -443,32 +443,32 @@ public partial class LlamaClient {
 #endregion OpenAI-compatible Chat Completion
 
 #region OpenAI-compatible Create Embeddings
-    public class OAIEmbeddingsContent {
+    public class OAIEmbeddingsRequest {
         [JsonPropertyName("input")] public required string Input { get; set; }
         [JsonPropertyName("model")] public string? Model { get; set; }  // seems like unused and can be omitted on llama.cpp server
-        [JsonPropertyName("encoding_format")] public OAIEmbeddingsContentEncodingFormat? EncodingFormat { get; set; }
+        [JsonPropertyName("encoding_format")] public OAIEmbeddingsRequestEncodingFormat? EncodingFormat { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public enum OAIEmbeddingsContentEncodingFormat {
+        public enum OAIEmbeddingsRequestEncodingFormat {
             [JsonStringEnumMemberName("float")] Float,
             [JsonStringEnumMemberName("base64")] Base64,
         }
 
         public class Builder {
-            private OAIEmbeddingsContent content;
+            private OAIEmbeddingsRequest request;
 
             public Builder() {
-                content = new() {
+                request = new() {
                     Input = null!,
                 };
             }
 
-            public OAIEmbeddingsContent Build() {
-                if (content.Input is null) throw new InvalidOperationException("Input is not set!");
-                return content;
+            public OAIEmbeddingsRequest Build() {
+                if (request.Input is null) throw new InvalidOperationException("Input is not set!");
+                return request;
             }
 
-            public Builder SetInput(string value) { content.Input = value; return this; }
+            public Builder SetInput(string value) { request.Input = value; return this; }
         }
     }
 

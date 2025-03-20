@@ -32,10 +32,10 @@ public partial class LlamaClient : IDisposable {
         }
     }
     
-    public async Task<CompletionResponse> CompletionAsync(CompletionContent content) {
-        content.Stream = false;
+    public async Task<CompletionResponse> CompletionAsync(CompletionRequest request) {
+        request.Stream = false;
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -46,10 +46,10 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
     
-    public async IAsyncEnumerable<CompletionResponse> CompletionStreamAsync(CompletionContent content) {
-        content.Stream = true;
+    public async IAsyncEnumerable<CompletionResponse> CompletionStreamAsync(CompletionRequest request) {
+        request.Stream = true;
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -74,10 +74,10 @@ public partial class LlamaClient : IDisposable {
         }
     }
 
-    public async Task<int[]> TokenizeAsync(TokenizeContent content) {
-        content.WithPieces = false;
+    public async Task<int[]> TokenizeAsync(TokenizeRequest request) {
+        request.WithPieces = false;
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -93,10 +93,10 @@ public partial class LlamaClient : IDisposable {
         return tokensList.ToArray();
     }
 
-    public async Task<TokenizeTokensWithPieces[]> TokenizeWithPiecesAsync(TokenizeContent content) {
-        content.WithPieces = true;
+    public async Task<TokenizeTokensWithPieces[]> TokenizeWithPiecesAsync(TokenizeRequest request) {
+        request.WithPieces = true;
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -112,9 +112,9 @@ public partial class LlamaClient : IDisposable {
         return tokensList.ToArray();
     }
     
-    public async Task<string> DetokenizeAsync(DetokenizeContent content) {
+    public async Task<string> DetokenizeAsync(DetokenizeRequest request) {
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -126,9 +126,9 @@ public partial class LlamaClient : IDisposable {
         return detokenized;
     }
 
-    public async Task<ApplyTemplateResponse> ApplyTemplateAsync(ApplyTemplateContent content) {
+    public async Task<ApplyTemplateResponse> ApplyTemplateAsync(ApplyTemplateRequest request) {
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -139,9 +139,9 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
 
-    public async Task<EmbeddingResponse[]> GetEmbeddingAsync(EmbeddingContent content) {
+    public async Task<EmbeddingResponse[]> GetEmbeddingAsync(EmbeddingRequest request) {
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -172,9 +172,9 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
 
-    public async Task SetLoRAAdaptersAsync(LoRAAdapterContent[] content) {
+    public async Task SetLoRAAdaptersAsync(LoRAAdapterRequest[] request) {
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -192,10 +192,10 @@ public partial class LlamaClient : IDisposable {
 
     // TODO: v1/completions
 
-    public async Task<OAIChatCompletionResponse> OAIChatCompletionAsync(OAIChatCompletionContent content) {
-        content.Stream = false;
+    public async Task<OAIChatCompletionResponse> OAIChatCompletionAsync(OAIChatCompletionRequest request) {
+        request.Stream = false;
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -206,10 +206,10 @@ public partial class LlamaClient : IDisposable {
         return responseJson;
     }
 
-    public async IAsyncEnumerable<OAIChatCompletionStreamResponse> OAIChatCompletionStreamAsync(OAIChatCompletionContent content) {
-        content.Stream = true;
+    public async IAsyncEnumerable<OAIChatCompletionStreamResponse> OAIChatCompletionStreamAsync(OAIChatCompletionRequest request) {
+        request.Stream = true;
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -234,10 +234,10 @@ public partial class LlamaClient : IDisposable {
         }
     }
 
-    public async Task<OAIEmbeddingsFloatResponse> OAIEmbeddingsAsFloatAsync(OAIEmbeddingsContent content) {
-        content.EncodingFormat = OAIEmbeddingsContent.OAIEmbeddingsContentEncodingFormat.Float;
+    public async Task<OAIEmbeddingsFloatResponse> OAIEmbeddingsAsFloatAsync(OAIEmbeddingsRequest request) {
+        request.EncodingFormat = OAIEmbeddingsRequest.OAIEmbeddingsRequestEncodingFormat.Float;
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
@@ -255,10 +255,10 @@ public partial class LlamaClient : IDisposable {
         }
     }
 
-    public async Task<OAIEmbeddingsBase64Response> OAIEmbeddingsAsBase64Async(OAIEmbeddingsContent content) {
-        content.EncodingFormat = OAIEmbeddingsContent.OAIEmbeddingsContentEncodingFormat.Base64;
+    public async Task<OAIEmbeddingsBase64Response> OAIEmbeddingsAsBase64Async(OAIEmbeddingsRequest request) {
+        request.EncodingFormat = OAIEmbeddingsRequest.OAIEmbeddingsRequestEncodingFormat.Base64;
         using StringContent postContent = new(
-            JsonSerializer.Serialize(content, new JsonSerializerOptions() {
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             }), Encoding.UTF8, "application/json"
         );
