@@ -4,7 +4,7 @@ A C# client interface for [LLaMA.cpp HTTP Server](https://github.com/ggml-org/ll
 
 # Under construction
 
-This project is at a very early stage of development, and only a few APIs are currently implemented.
+This project is at a very early stage of development, and not all of the APIs are currently implemented.
 
 No support will be provided until the basic work has been completed.
 
