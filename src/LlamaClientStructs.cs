@@ -228,9 +228,9 @@ public partial class LlamaClient {
             public Builder SetTokens(int[] value) { content.Tokens = value; return this; }
         }
     }
-#endregion Tokenize
+#endregion Detokenize
 
-#region Apply chat template
+#region Apply Chat Template
     public class ApplyTemplateContent {
         [JsonPropertyName("messages")] public required Message[] Messages { get; set; }
 
@@ -255,9 +255,9 @@ public partial class LlamaClient {
     public class ApplyTemplateResponse {
         [JsonPropertyName("prompt")] public required string Prompt { get; set; }
     }
-#endregion Apply chat template
+#endregion Apply Chat Template
 
-#region Generate embedding
+#region Generate Embedding
     public class EmbeddingContent {
         [JsonPropertyName("content")] public required string Content { get; set; }
         [JsonPropertyName("image_data")] public ImageData[]? ImageData { get; set; }
@@ -285,7 +285,7 @@ public partial class LlamaClient {
         [JsonPropertyName("index")] public required int Index { get; set; }
         [JsonPropertyName("embedding")] public required double[][] Embedding { get; set; }
     }
-#endregion Generate embedding
+#endregion Generate Embedding
 
 #region OpenAI-compatible Model Info
     public class OAIModelsResponse {
@@ -327,7 +327,7 @@ public partial class LlamaClient {
     }
 
     public class OAIChatCompletionContent {
-        [JsonPropertyName("model")] public required string Model { get; set; }
+        [JsonPropertyName("model")] public string? Model { get; set; }  // seems like unused and can be omitted on llama.cpp server
         [JsonPropertyName("messages")] public required Message[] Messages { get; set; }
         [JsonPropertyName("temperature")] public float? Temperature { get; set; }
         [JsonPropertyName("seed")] public int? Seed { get; set; }
@@ -347,7 +347,7 @@ public partial class LlamaClient {
 
             public Builder() {
                 content = new OAIChatCompletionContent() {
-                    Model = "",
+                    Model = null,
                     Messages = null!,
                 };
             }
