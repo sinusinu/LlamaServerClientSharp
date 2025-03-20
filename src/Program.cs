@@ -8,7 +8,7 @@ namespace LlamaServerClientSharp;
 class Program {
     static async Task Main(string[] args) {
         Uri uri = new Uri("http://localhost:8080");
-        var llamaClient = new LlamaClient(uri);
+        using var llamaClient = new LlamaClient(uri);
         
         var health = await llamaClient.GetHealthAsync();
         Console.WriteLine(health);
