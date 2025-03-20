@@ -229,7 +229,8 @@ public partial class LlamaClient : IDisposable {
         if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) {
             var responseContent = await response.Content.ReadAsStringAsync();
             if (responseContent.Contains("Pooling type 'none'")) throw new InvalidOperationException("Pooling type 'none' is not OAI compatible. Please use a different pooling type.");
-            else throw new HttpRequestException($"Response status code does not indicate success: 400 (Bad Request)");
+            else response.EnsureSuccessStatusCode();
+            return null!;   // shouldn't be reached
         } else {
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStringAsync();
@@ -249,7 +250,8 @@ public partial class LlamaClient : IDisposable {
         if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) {
             var responseContent = await response.Content.ReadAsStringAsync();
             if (responseContent.Contains("Pooling type 'none'")) throw new InvalidOperationException("Pooling type 'none' is not OAI compatible. Please use a different pooling type.");
-            else throw new HttpRequestException($"Response status code does not indicate success: 400 (Bad Request)");
+            else response.EnsureSuccessStatusCode();
+            return null!;   // shouldn't be reached
         } else {
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStringAsync();
