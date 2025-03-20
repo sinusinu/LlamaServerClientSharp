@@ -55,7 +55,7 @@ class Program {
 #region Apply chat template
         var applyTemplateContent = new LlamaClient.ApplyTemplateContent.Builder()
             .SetMessages([
-                new LlamaClient.CommonMessage(
+                new LlamaClient.Message(
                     "user",
                     "Hello!"
                 ),
@@ -72,12 +72,12 @@ class Program {
 #endregion OpenAI-compatible Model Info
 
 #region OpenAI-compatible Chat Completion
-        var chatCompletionMessages = new LlamaClient.CommonMessage[] {
-            new LlamaClient.CommonMessage(
+        var chatCompletionMessages = new LlamaClient.Message[] {
+            new LlamaClient.Message(
                 "system",
                 "Write an answer to the user's message, and evaluate if user's message was friendly. Output must follow the JSON schema given below.\n\n# JSON Schema\n```json\n{ \"answer\": string, \"positive\": boolean }\n```\n- answer: Answer to the user's message\n- positive: true if user's message was positive, false if not"
             ),
-            new LlamaClient.CommonMessage(
+            new LlamaClient.Message(
                 "user",
                 "Nice to meet you!"
             ),

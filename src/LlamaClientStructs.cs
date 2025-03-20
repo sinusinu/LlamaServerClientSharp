@@ -17,7 +17,7 @@ public partial class LlamaClient {
 #endregion Health
 
 #region Commonly used classes
-    public class CommonTimings {
+    public class Timings {
         [JsonPropertyName("prompt_n")] public double PromptN { get; set; }
         [JsonPropertyName("prompt_ms")] public double PromptMs { get; set; }
         [JsonPropertyName("prompt_per_token_ms")] public double PromptPerTokenMs { get; set; }
@@ -28,11 +28,11 @@ public partial class LlamaClient {
         [JsonPropertyName("predicted_per_second")] public double PredictedPerSecond { get; set; }
     }
 
-    public class CommonMessage {
+    public class Message {
         public string role { get; set; }
         public string content { get; set; }
 
-        public CommonMessage(string role, string content) {
+        public Message(string role, string content) {
             this.role = role;
             this.content = content;
         }
@@ -163,7 +163,7 @@ public partial class LlamaClient {
         [JsonPropertyName("model")] public string? Model { get; set; }
         [JsonPropertyName("stop_type")] public string? StopType { get; set; }
         [JsonPropertyName("stopping_word")] public string? StoppingWord { get; set; }
-        [JsonPropertyName("timings")] public CommonTimings? Timings { get; set; }
+        [JsonPropertyName("timings")] public Timings? Timings { get; set; }
         [JsonPropertyName("tokens_cached")] public int? TokensCached { get; set; }
         [JsonPropertyName("tokens_evaluated")] public int? TokensEvaluated { get; set; }
         [JsonPropertyName("truncated")] public bool Truncated { get; set; }
@@ -227,7 +227,7 @@ public partial class LlamaClient {
 
 #region Apply chat template
     public class ApplyTemplateContent {
-        [JsonPropertyName("messages")] public required CommonMessage[] Messages { get; set; }
+        [JsonPropertyName("messages")] public required Message[] Messages { get; set; }
 
         public class Builder {
             private ApplyTemplateContent content;
@@ -243,7 +243,7 @@ public partial class LlamaClient {
                 return content;
             }
 
-            public Builder SetMessages(CommonMessage[] value) { content.Messages = value; return this; }
+            public Builder SetMessages(Message[] value) { content.Messages = value; return this; }
         }
     }
 
@@ -291,7 +291,7 @@ public partial class LlamaClient {
 
     public class OAIChatCompletionContent {
         [JsonPropertyName("model")] public required string Model { get; set; }
-        [JsonPropertyName("messages")] public required CommonMessage[] Messages { get; set; }
+        [JsonPropertyName("messages")] public required Message[] Messages { get; set; }
         [JsonPropertyName("temperature")] public float? Temperature { get; set; }
         [JsonPropertyName("seed")] public int? Seed { get; set; }
         [JsonPropertyName("response_format")] public OAIResponseFormat? ResponseFormat { get; set; }
@@ -320,7 +320,7 @@ public partial class LlamaClient {
                 return content;
             }
 
-            public Builder SetMessages(CommonMessage[] value) { content.Messages = value; return this; }
+            public Builder SetMessages(Message[] value) { content.Messages = value; return this; }
             public Builder SetTemperature(float? value) { content.Temperature = value; return this; }
             public Builder SetSeed(int value) { content.Seed = value; return this; }
             public Builder SetResponseFormat(OAIResponseFormat.ResponseType type, JsonNode? schema) { content.ResponseFormat = new OAIResponseFormat() { Type = type, Schema = schema }; return this; }
@@ -343,7 +343,7 @@ public partial class LlamaClient {
         [JsonPropertyName("object")] public string? Object { get; set; }
         [JsonPropertyName("usage")] public OAIChatCompletionResponseUsage? Usage { get; set; }
         [JsonPropertyName("id")] public string? Id { get; set; }
-        [JsonPropertyName("timings")] public CommonTimings? Timings { get; set; }
+        [JsonPropertyName("timings")] public Timings? Timings { get; set; }
 
         [JsonIgnore]
         public OAIChatCompletionResponseChoice FirstChoice { get { return Choices[0]; } }
@@ -374,7 +374,7 @@ public partial class LlamaClient {
         [JsonPropertyName("system_fingerprint")] public string? SystemFingerprint { get; set; }
         [JsonPropertyName("object")] public string? Object { get; set; }
         [JsonPropertyName("usage")] public OAIChatCompletionResponseUsage? Usage { get; set; }
-        [JsonPropertyName("timings")] public CommonTimings? Timings { get; set; }
+        [JsonPropertyName("timings")] public Timings? Timings { get; set; }
 
         [JsonIgnore]
         public OAIChatCompletionStreamResponseChoice FirstChoice { get { return Choices[0]; } }
