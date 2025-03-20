@@ -80,7 +80,7 @@ class Program {
             .SetMessages(chatCompletionMessages)
             .SetResponseFormat(
                 OAIResponseFormat.ResponseType.JsonSchema,
-                JsonSerializerOptions.Default.GetJsonSchemaAsNode(typeof(AnswerSchema))
+                OAIResponseFormat.SchemaOf<AnswerSchema>()
             )
             .Build();
 
