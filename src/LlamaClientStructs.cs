@@ -315,6 +315,52 @@ public partial class LlamaClient {
     }
 #endregion Generate Embedding
 
+#region Reranking
+    public class RerankRequest {
+        [JsonPropertyName("query")] public required string Query { get; set; }
+        [JsonPropertyName("top_n")] public int? TopN { get; set; }
+        [JsonPropertyName("documents")] public required string[] Documents { get; set; }
+
+        public class Builder {
+            private RerankRequest request;
+
+            public Builder() {
+                request = new() {
+                    Query = null!,
+                    Documents = null!,
+                };
+            }
+
+            public RerankRequest Build() {
+                if (request.Query is null) throw new InvalidOperationException("Query is not set!");
+                if (request.Documents is null) throw new InvalidOperationException("Documents are not set!");
+                return request;
+            }
+
+            public Builder SetQuery(string value) { request.Query = value; return this; }
+            public Builder SetTopN(int? value) { request.TopN = value; return this; }
+            public Builder SetDocuments(string[] value) { request.Documents = value; return this; }
+        }
+    }
+
+    public class RerankResponse {
+        [JsonPropertyName("model")] public required string Model { get; set; }
+        [JsonPropertyName("object")] public required string Object { get; set; }
+        [JsonPropertyName("usage")] public required RerankResponseUsage Usage { get; set; }
+        [JsonPropertyName("results")] public required RerankResponseResults[] Results { get; set; }
+    }
+
+    public class RerankResponseUsage {
+        [JsonPropertyName("prompt_tokens")] public required int PromptTokens { get; set; }
+        [JsonPropertyName("total_tokens")] public required int TotalTokens { get; set; }
+    }
+
+    public class RerankResponseResults {
+        [JsonPropertyName("index")] public required int Index { get; set; }
+        [JsonPropertyName("relevance_score")] public required double RelevanceScore { get; set; }
+    }
+#endregion Reranking
+
 #region Props
     public class PropsResponseDefaultGenerationSettings {
         [JsonPropertyName("id")] public required int Id { get; set; }

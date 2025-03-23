@@ -197,7 +197,25 @@ public partial class LlamaClient : IDisposable {
         }
     }
 
-    // TODO: reranking
+    /// <summary>POST /reranking</summary>
+    /// <param name="request">Use <c>RerankRequest.Builder</c>.</param>
+    public async Task<RerankResponse> RerankAsync(RerankRequest request) {
+        using StringContent postContent = new(
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }), Encoding.UTF8, "application/json"
+        );
+        var response = await client.PostAsync(endpoint + "reranking", postContent);
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<RerankResponse>(responseContent)!;
+            return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
+    }
 
     // TODO: infill
 

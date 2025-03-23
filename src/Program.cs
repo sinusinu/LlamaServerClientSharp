@@ -74,6 +74,26 @@ class Program {
         Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
 #endregion Generate Embedding
 
+#region Reranking
+        var rerankRequest = new RerankRequest.Builder()
+            .SetQuery("What is panda?")
+            .SetDocuments([
+                "hi",
+                "it is a bear",
+                "The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.",
+            ])
+            .Build();
+
+        try {
+            var rerankResponse = await llamaClient.RerankAsync(rerankRequest);
+            foreach (var results in rerankResponse.Results) {
+                Console.WriteLine(results.RelevanceScore);
+            }
+        } catch (LlamaServerException) {
+            Console.WriteLine("This server does not support reranking (need a reranking model, set --reranking)");
+        }
+#endregion Reranking
+
 #region Get/Set Server Global Properties
         var propsGetResponse = await llamaClient.GetPropsAsync();
         Console.WriteLine(propsGetResponse.BuildInfo);
