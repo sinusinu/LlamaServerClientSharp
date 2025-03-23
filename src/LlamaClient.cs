@@ -236,9 +236,8 @@ public partial class LlamaClient : IDisposable {
         }
     }
 
-    // TODO: embeddings
-
-    // TODO: slots & friends
+    // apparently GET /slots is intended for debugging and is strongly advised against enabling in production environments.
+    // safe to assume that no one would want this on here?
 
     // TODO: metrics
 
