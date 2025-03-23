@@ -1,7 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Schema;
-
-using static LlamaServerClientSharp.LlamaClient;
+﻿using static LlamaServerClientSharp.LlamaClient;
 
 namespace LlamaServerClientSharp;
 
