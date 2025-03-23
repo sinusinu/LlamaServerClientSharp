@@ -49,6 +49,22 @@ public partial class LlamaClient {
         public static Message System(string content) => new Message("system", content);
         public static Message User(string content) => new Message("user", content);
         public static Message Assistant(string content) => new Message("assistant", content);
+
+        public class Builder {
+            private List<Message> messages;
+
+            public Builder() {
+                messages = new();
+            }
+
+            public Message[] Build() {
+                return messages.ToArray();
+            }
+
+            public Builder System(string content) { messages.Add(new Message("system", content)); return this; }
+            public Builder User(string content) { messages.Add(new Message("user", content)); return this; }
+            public Builder Assistant(string content) { messages.Add(new Message("assistant", content)); return this; }
+        }
     }
 #endregion Commonly used classes
 

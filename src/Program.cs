@@ -87,10 +87,10 @@ class Program {
 #endregion OpenAI-compatible Model Info
 
 #region OpenAI-compatible Chat Completion
-        var chatCompletionMessages = new Message[] {
-            Message.System("Write an answer to the user's message."),
-            Message.User("Nice to meet you!"),
-        };
+        var chatCompletionMessages = new Message.Builder()
+            .System("Write an answer to the user's message.")
+            .User("Nice to meet you!")
+            .Build();
 
         var chatCompletionRequest = new OAIChatCompletionRequest.Builder()
             .SetMessages(chatCompletionMessages)
@@ -109,10 +109,10 @@ class Program {
 #endregion OpenAI-compatible Chat Completion
 
 #region OpenAI-compatible Chat Completion (Structured Output)
-        var chatCompletionSOMessages = new Message[] {
-            Message.System("Write an answer to the user's message, and evaluate if user's message was positive. Output must follow the JSON schema given below.\n\n# JSON Schema\n```json\n{ \"answer\": string, \"positive\": boolean }\n```\n- answer: Answer to the user's message\n- positive: true if user's message was positive, false if not"),
-            Message.User("Nice to meet you!"),
-        };
+        var chatCompletionSOMessages = new Message.Builder()
+            .System("Write an answer to the user's message, and evaluate if user's message was positive. Output must follow the JSON schema given below.\n\n# JSON Schema\n```json\n{ \"answer\": string, \"positive\": boolean }\n```\n- answer: Answer to the user's message\n- positive: true if user's message was positive, false if not")
+            .User("Nice to meet you!")
+            .Build();
 
         var chatCompletionSORequest = new OAIChatCompletionRequest.Builder()
             .SetMessages(chatCompletionSOMessages)
