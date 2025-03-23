@@ -143,7 +143,16 @@ class Program {
 
 #region OpenAI-compatible Chat Completion (Structured Output)
         var oaiChatCompletionSOMessages = new Message.Builder()
-            .System("Write an answer to the user's message, and evaluate if user's message was positive. Output must follow the JSON schema given below.\n\n# JSON Schema\n```json\n{ \"answer\": string, \"positive\": boolean }\n```\n- answer: Answer to the user's message\n- positive: true if user's message was positive, false if not")
+            .System(
+@"Write an answer to the user's message, and evaluate if user's message was positive. Output must follow the JSON schema given below.
+
+# JSON Schema
+```json
+{ ""answer"": string, ""positive"": boolean }
+```
+- answer: Answer to the user's message
+- positive: true if user's message was positive, false if not"
+            )
             .User("Nice to meet you!")
             .Build();
 
