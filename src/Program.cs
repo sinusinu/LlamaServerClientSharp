@@ -86,6 +86,18 @@ class Program {
         }
 #endregion Get/Set Server Global Properties
 
+#region Prometheus-compatible Metrics
+        try {
+            var metrics = await llamaClient.GetMetricsAsync();
+            foreach (var metricsLine in metrics.Split('\n')) {
+                if (metricsLine.StartsWith('#')) continue;
+                Console.WriteLine(metricsLine);
+            }
+        } catch (LlamaServerException) {
+            Console.WriteLine($"This server does not support exporting metrics (forgot to set --metrics?)");
+        }
+#endregion Prometheus-compatible Metrics
+
 #region LoRA Adapters
         var loraAdapters = await llamaClient.GetLoRAAdaptersAsync();
         Console.WriteLine(loraAdapters.Length);

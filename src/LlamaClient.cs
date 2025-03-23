@@ -239,7 +239,18 @@ public partial class LlamaClient : IDisposable {
     // apparently GET /slots is intended for debugging and is strongly advised against enabling in production environments.
     // safe to assume that no one would want this on here?
 
-    // TODO: metrics
+    /// <summary>GET /metrics</summary>
+    public async Task<string> GetMetricsAsync() {
+        var response = await client.GetAsync(endpoint + "metrics");
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            return responseContent;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
+    }
 
     /// <summary>GET /lora-adapters</summary>
     public async Task<LoRAAdapterResponse[]> GetLoRAAdaptersAsync() {
