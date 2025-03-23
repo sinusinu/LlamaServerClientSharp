@@ -18,6 +18,7 @@ class Program {
         var prompt = "<start_of_turn>user\nYou are a helpful assistant\n\nHello<end_of_turn>\n<start_of_turn>model\n";
         var completionRequest = new CompletionRequest.Builder()
             .SetPrompt(prompt)
+            .SetNPredict(128)
             .Build();
 
         // immediate
