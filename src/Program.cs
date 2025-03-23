@@ -74,6 +74,19 @@ class Program {
         Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
 #endregion Generate Embedding
 
+#region Get/Set Server Global Properties
+        var propsGetResponse = await llamaClient.GetPropsAsync();
+        Console.WriteLine(propsGetResponse.BuildInfo);
+
+        try {
+            var propsSetRequest = new PropsSetRequest() { ChatTemplate = propsGetResponse.ChatTemplate };
+            var propsSetSuccess = await llamaClient.SetPropsAsync(propsSetRequest);
+            Console.WriteLine($"SetPropsAsync: {propsSetSuccess}");
+        } catch (LlamaServerException) {
+            Console.WriteLine($"This server does not support setting props");
+        }
+#endregion Get/Set Server Global Properties
+
 #region LoRA Adapters
         var loraAdapters = await llamaClient.GetLoRAAdaptersAsync();
         Console.WriteLine(loraAdapters.Length);

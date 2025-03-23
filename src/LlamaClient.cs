@@ -201,7 +201,40 @@ public partial class LlamaClient : IDisposable {
 
     // TODO: infill
 
-    // TODO: props
+    /// <summary>GET /props</summary>
+    public async Task<PropsGetResponse> GetPropsAsync() {
+        var response = await client.GetAsync(endpoint + "props");
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<PropsGetResponse>(responseContent)!;
+            return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
+    }
+
+    /// <summary>POST /props</summary>
+    /// <param name="request">Use <c>new PropsSetRequest() { ... }</c>.</param>
+    public async Task<bool> SetPropsAsync(PropsSetRequest request) {
+        using StringContent postContent = new(
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }), Encoding.UTF8, "application/json"
+        );
+        var response = await client.PostAsync(endpoint + "props", postContent);
+        if (!response.IsSuccessStatusCode) {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        } else {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonDocument.Parse(responseContent)!;
+            var success = responseJson.RootElement.GetProperty("success").GetBoolean();
+            return success;
+        }
+    }
 
     // TODO: embeddings
 

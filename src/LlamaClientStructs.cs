@@ -315,6 +315,83 @@ public partial class LlamaClient {
     }
 #endregion Generate Embedding
 
+#region Props
+    public class PropsResponseDefaultGenerationSettings {
+        [JsonPropertyName("id")] public required int Id { get; set; }
+        [JsonPropertyName("id_task")] public required int IdTask { get; set; }
+        [JsonPropertyName("n_ctx")] public required int NCtx { get; set; }
+        [JsonPropertyName("speculative")] public required bool Speculative { get; set; }
+        [JsonPropertyName("is_processing")] public required bool IsProcessing { get; set; }
+        [JsonPropertyName("params")] public required PropsResponseDefaultGenerationSettingsParams Params { get; set; }
+        [JsonPropertyName("prompt")] public required string Prompt { get; set; }
+        [JsonPropertyName("next_token")] public required PropsResponseDefaultGenerationSettingsNextToken NextToken { get; set; }
+    }
+
+    public class PropsResponseDefaultGenerationSettingsParams {
+        [JsonPropertyName("n_predict")] public required int NPredict { get; set; }
+        [JsonPropertyName("seed")] public required long Seed { get; set; }
+        [JsonPropertyName("temperature")] public required double Temperature { get; set; }
+        [JsonPropertyName("dynatemp_range")] public required double DynatempRange { get; set; }
+        [JsonPropertyName("dynatemp_exponent")] public required double DynatempExponent { get; set; }
+        [JsonPropertyName("top_k")] public required int TopK { get; set; }
+        [JsonPropertyName("top_p")] public required double TopP { get; set; }
+        [JsonPropertyName("min_p")] public required double MinP { get; set; }
+        [JsonPropertyName("xtc_probability")] public required double XtcProbability { get; set; }
+        [JsonPropertyName("xtc_threshold")] public required double XtcThreshold { get; set; }
+        [JsonPropertyName("typical_p")] public required double TypicalP { get; set; }
+        [JsonPropertyName("repeat_last_n")] public required int RepeatLastN { get; set; }
+        [JsonPropertyName("repeat_penalty")] public required double RepeatPenalty { get; set; }
+        [JsonPropertyName("presence_penalty")] public required double PresencePenalty { get; set; }
+        [JsonPropertyName("frequency_penalty")] public required double FrequencyPenalty { get; set; }
+        [JsonPropertyName("dry_multiplier")] public required double DryMultiplier { get; set; }
+        [JsonPropertyName("dry_base")] public required double DryBase { get; set; }
+        [JsonPropertyName("dry_allowed_length")] public required int DryAllowedLength { get; set; }
+        [JsonPropertyName("dry_penalty_last_n")] public required int DryPenaltyLastN { get; set; }
+        [JsonPropertyName("dry_sequence_breakers")] public required string[] DrySequenceBreakers { get; set; }
+        [JsonPropertyName("mirostat")] public required int Mirostat { get; set; }
+        [JsonPropertyName("mirostat_tau")] public required double MirostatTau { get; set; }
+        [JsonPropertyName("mirostat_eta")] public required double MirostatEta { get; set; }
+        [JsonPropertyName("stop")] public required string[] Stop { get; set; }
+        [JsonPropertyName("max_tokens")] public required int MaxTokens { get; set; }
+        [JsonPropertyName("n_keep")] public required int NKeep { get; set; }
+        [JsonPropertyName("n_discard")] public required int NDiscard { get; set; }
+        [JsonPropertyName("ignore_eos")] public required bool IgnoreEos { get; set; }
+        [JsonPropertyName("stream")] public required bool Stream { get; set; }
+        [JsonPropertyName("n_probs")] public required int NProbs { get; set; }
+        [JsonPropertyName("min_keep")] public required int MinKeep { get; set; }
+        [JsonPropertyName("grammar")] public required string Grammar { get; set; }
+        [JsonPropertyName("samplers")] public required string[] Samplers { get; set; }
+        [JsonPropertyName("speculative.n_max")] public required int SpeculativeNMax { get; set; }
+        [JsonPropertyName("speculative.n_min")] public required int SpeculativeNMin { get; set; }
+        [JsonPropertyName("speculative.p_min")] public required double SpeculativePMin { get; set; }
+        [JsonPropertyName("timings_per_token")] public required bool TimingsPerToken { get; set; }
+    }
+
+    public class PropsResponseDefaultGenerationSettingsNextToken {
+        [JsonPropertyName("has_next_token")] public required bool HasNextToken { get; set; }
+        [JsonPropertyName("has_new_line")] public required bool HasNewLine { get; set; }
+        [JsonPropertyName("n_remain")] public required int NRemain { get; set; }
+        [JsonPropertyName("n_decoded")] public required int NDecoded { get; set; }
+        [JsonPropertyName("stopping_word")] public required string StoppingWord { get; set; }
+    }
+
+    public class PropsGetResponse {
+        [JsonPropertyName("default_generation_settings")] public required PropsResponseDefaultGenerationSettings DefaultGenerationSettings { get; set; }
+        [JsonPropertyName("total_slots")] public required int TotalSlots { get; set; }
+        [JsonPropertyName("model_path")] public required string ModelPath { get; set; }
+        [JsonPropertyName("chat_template")] public required string ChatTemplate { get; set; }
+        [JsonPropertyName("build_info")] public required string BuildInfo { get; set; }
+    }
+
+    public class PropsSetRequest {
+        [JsonPropertyName("default_generation_settings")] public PropsResponseDefaultGenerationSettings? DefaultGenerationSettings { get; set; }
+        [JsonPropertyName("total_slots")] public int? TotalSlots { get; set; }
+        [JsonPropertyName("model_path")] public string? ModelPath { get; set; }
+        [JsonPropertyName("chat_template")] public string? ChatTemplate { get; set; }
+        [JsonPropertyName("build_info")] public string? BuildInfo { get; set; }
+    }
+#endregion Props
+
 #region LoRA Adapters
     public class LoRAAdapterResponse {
         [JsonPropertyName("id")] public required int Id { get; set; }
