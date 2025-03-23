@@ -83,7 +83,7 @@ class Program {
             var propsSetSuccess = await llamaClient.SetPropsAsync(propsSetRequest);
             Console.WriteLine($"SetPropsAsync: {propsSetSuccess}");
         } catch (LlamaServerException) {
-            Console.WriteLine($"This server does not support setting props");
+            Console.WriteLine($"This server does not support setting props (forgot to set --props?)");
         }
 #endregion Get/Set Server Global Properties
 
@@ -104,6 +104,7 @@ class Program {
 
         var oaiCompletionRequest = new OAICompletionRequest.Builder()
             .SetPrompt(oaiCompletionMessage)
+            .SetMaxTokens(128)
             .Build();
 
         // immediate
@@ -126,6 +127,7 @@ class Program {
         var oaiChatCompletionRequest = new OAIChatCompletionRequest.Builder()
             .SetMessages(oaiChatCompletionMessages)
             .SetResponseFormat(OAIResponseFormat.ResponseType.Text, null)
+            .SetMaxCompletionTokens(128)
             .Build();
 
         // immediate
@@ -169,11 +171,15 @@ class Program {
             .SetInput("Hello world!")
             .Build();
 
-        var oaiEmbeddingsResponse = await llamaClient.OAIEmbeddingsAsFloatAsync(oaiEmbeddingsRequest);
-        Console.WriteLine(oaiEmbeddingsResponse.Data[0].Embedding[0]);
+        try {
+            var oaiEmbeddingsResponse = await llamaClient.OAIEmbeddingsAsFloatAsync(oaiEmbeddingsRequest);
+            Console.WriteLine(oaiEmbeddingsResponse.Data[0].Embedding[0]);
 
-        var oaiEmbeddingsBResponse = await llamaClient.OAIEmbeddingsAsBase64Async(oaiEmbeddingsRequest);
-        Console.WriteLine(oaiEmbeddingsBResponse.Data[0].Embedding.Substring(0, 5));
+            var oaiEmbeddingsBResponse = await llamaClient.OAIEmbeddingsAsBase64Async(oaiEmbeddingsRequest);
+            Console.WriteLine(oaiEmbeddingsBResponse.Data[0].Embedding.Substring(0, 5));
+        } catch (LlamaServerException) {
+            Console.WriteLine("This server does not support OAI-compatible embeddings (forgot to set --polling?)");
+        }
 #endregion OpenAI-compatible Create Embeddings
     }
 
