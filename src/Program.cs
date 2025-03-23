@@ -105,35 +105,35 @@ class Program {
 #endregion OpenAI-compatible Completion
 
 #region OpenAI-compatible Chat Completion
-        var chatCompletionMessages = new Message.Builder()
+        var oaiChatCompletionMessages = new Message.Builder()
             .System("Write an answer to the user's message.")
             .User("Nice to meet you!")
             .Build();
 
-        var chatCompletionRequest = new OAIChatCompletionRequest.Builder()
-            .SetMessages(chatCompletionMessages)
+        var oaiChatCompletionRequest = new OAIChatCompletionRequest.Builder()
+            .SetMessages(oaiChatCompletionMessages)
             .SetResponseFormat(OAIResponseFormat.ResponseType.Text, null)
             .Build();
 
         // immediate
-        var chatCompletionImmediateResponse = await llamaClient.OAIChatCompletionAsync(chatCompletionRequest);
-        Console.WriteLine(chatCompletionImmediateResponse.FirstChoice.Message.Content);
+        var oaiChatCompletionImmediateResponse = await llamaClient.OAIChatCompletionAsync(oaiChatCompletionRequest);
+        Console.WriteLine(oaiChatCompletionImmediateResponse.FirstChoice.Message.Content);
 
         // streaming
-        await foreach (var chatCompletionPartialResponse in llamaClient.OAIChatCompletionStreamAsync(chatCompletionRequest)) {
-            if (chatCompletionPartialResponse.FirstChoice.Delta is not null) Console.Write(chatCompletionPartialResponse.FirstChoice.Delta.Content);
+        await foreach (var oaiChatCompletionPartialResponse in llamaClient.OAIChatCompletionStreamAsync(oaiChatCompletionRequest)) {
+            if (oaiChatCompletionPartialResponse.FirstChoice.Delta is not null) Console.Write(oaiChatCompletionPartialResponse.FirstChoice.Delta.Content);
         }
         Console.WriteLine();
 #endregion OpenAI-compatible Chat Completion
 
 #region OpenAI-compatible Chat Completion (Structured Output)
-        var chatCompletionSOMessages = new Message.Builder()
+        var oaiChatCompletionSOMessages = new Message.Builder()
             .System("Write an answer to the user's message, and evaluate if user's message was positive. Output must follow the JSON schema given below.\n\n# JSON Schema\n```json\n{ \"answer\": string, \"positive\": boolean }\n```\n- answer: Answer to the user's message\n- positive: true if user's message was positive, false if not")
             .User("Nice to meet you!")
             .Build();
 
-        var chatCompletionSORequest = new OAIChatCompletionRequest.Builder()
-            .SetMessages(chatCompletionSOMessages)
+        var oaiChatCompletionSORequest = new OAIChatCompletionRequest.Builder()
+            .SetMessages(oaiChatCompletionSOMessages)
             .SetResponseFormat(
                 OAIResponseFormat.ResponseType.JsonSchema,
                 OAIResponseFormat.SchemaOf<AnswerSchema>()
@@ -141,12 +141,12 @@ class Program {
             .Build();
 
         // immediate
-        var chatCompletionSOImmediateResponse = await llamaClient.OAIChatCompletionAsync(chatCompletionSORequest);
-        Console.WriteLine(chatCompletionSOImmediateResponse.FirstChoice.Message.Content);
+        var oaiChatCompletionSOImmediateResponse = await llamaClient.OAIChatCompletionAsync(oaiChatCompletionSORequest);
+        Console.WriteLine(oaiChatCompletionSOImmediateResponse.FirstChoice.Message.Content);
 
         // streaming
-        await foreach (var chatCompletionSOPartialResponse in llamaClient.OAIChatCompletionStreamAsync(chatCompletionSORequest)) {
-            if (chatCompletionSOPartialResponse.FirstChoice.Delta is not null) Console.Write(chatCompletionSOPartialResponse.FirstChoice.Delta.Content);
+        await foreach (var oaiChatCompletionSOPartialResponse in llamaClient.OAIChatCompletionStreamAsync(oaiChatCompletionSORequest)) {
+            if (oaiChatCompletionSOPartialResponse.FirstChoice.Delta is not null) Console.Write(oaiChatCompletionSOPartialResponse.FirstChoice.Delta.Content);
         }
         Console.WriteLine();
 #endregion OpenAI-compatible Chat Completion (Structured Output)
