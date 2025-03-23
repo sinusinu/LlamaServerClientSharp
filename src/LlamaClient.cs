@@ -253,7 +253,61 @@ public partial class LlamaClient : IDisposable {
         }
     }
 
-    // TODO: v1/completions
+    /// <summary>POST /v1/completions, "stream": false</summary>
+    /// <param name="request">Use <c>OAICompletionRequest.Builder</c>.</param>
+    public async Task<OAICompletionResponse> OAICompletionAsync(OAICompletionRequest request) {
+        request.Stream = false;
+        using StringContent postContent = new(
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }), Encoding.UTF8, "application/json"
+        );
+        var response = await client.PostAsync(endpoint + "v1/completions", postContent);
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseJson = JsonSerializer.Deserialize<OAICompletionResponse>(responseContent)!;
+            return responseJson;
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
+    }
+
+    /// <summary>POST /v1/completions, "stream": true</summary>
+    /// <param name="request">Use <c>OAICompletionRequest.Builder</c>.</param>
+    public async IAsyncEnumerable<OAICompletionStreamResponse> OAICompletionStreamAsync(OAICompletionRequest request) {
+        request.Stream = true;
+        using StringContent postContent = new(
+            JsonSerializer.Serialize(request, new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }), Encoding.UTF8, "application/json"
+        );
+        using HttpRequestMessage message = new(HttpMethod.Post, endpoint + "v1/completions") {
+            Content = postContent
+        };
+        var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead);
+        if (response.IsSuccessStatusCode) {
+            var responseStream = await response.Content.ReadAsStreamAsync();
+            using (var reader = new StreamReader(responseStream)) {
+                while (!reader.EndOfStream) {
+                    var line = await reader.ReadLineAsync();
+                    if (line is null) continue;
+                    line = line.Trim();
+                    if (line.Length == 0) continue;
+                    if (!line.StartsWith("data: ")) continue;
+                    line = line.Substring(6);
+                    if (line == "[DONE]") break;
+                    var partialResult = JsonSerializer.Deserialize<OAICompletionStreamResponse>(line)!;
+                    yield return partialResult;
+                }
+            }
+        } else {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var errorJson = JsonSerializer.Deserialize<Error>(errorContent)!;
+            throw new LlamaServerException(errorJson.InnerError.Code, errorJson.InnerError.Message, errorJson.InnerError.Type);
+        }
+    }
 
     /// <summary>POST /v1/chat/completions, "stream": false</summary>
     /// <param name="request">Use <c>OAIChatCompletionRequest.Builder</c>.</param>

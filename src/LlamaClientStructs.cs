@@ -352,6 +352,170 @@ public partial class LlamaClient {
     }
 #endregion OpenAI-compatible Model Info
 
+#region OpenAI-compatible Completion
+    public class OAICompletionRequest {
+        [JsonPropertyName("model")] public string? Model { get; set; }  // seems like unused and can be omitted on llama.cpp server
+        [JsonPropertyName("prompt")] public required string Prompt { get; set; }
+        [JsonPropertyName("echo")] public bool? Echo { get; set; }
+        [JsonPropertyName("frequency_penalty")] public float? FrequencyPenalty { get; set; }
+        //[JsonPropertyName("logit_bias")] public List<object>? LogitBias { get; set; }   // TODO: how'd i do this...
+        [JsonPropertyName("logprobs")] public bool? Logprobs { get; set; }
+        [JsonPropertyName("max_tokens")] public int? MaxTokens { get; set; }
+        [JsonPropertyName("n")] public int? N { get; set; }
+        [JsonPropertyName("presence_penalty")] public float? PresencePenalty { get; set; }
+        [JsonPropertyName("seed")] public int? Seed { get; set; }
+        [JsonPropertyName("stop")] public string[]? Stop { get; set; }
+        [JsonPropertyName("stream")] public bool? Stream { get; set; }
+        // stream_options
+        // suffix?
+        [JsonPropertyName("temperature")] public float? Temperature { get; set; }
+        [JsonPropertyName("top_p")] public float? TopP { get; set; }
+        // llama.cpp completion-specific features
+        [JsonPropertyName("dynatemp_range")] public float? DynatempRange { get; set; }
+        [JsonPropertyName("dynatemp_exponent")] public float? DynatempExponent { get; set; }
+        [JsonPropertyName("top_k")] public int? TopK { get; set; }
+        [JsonPropertyName("min_p")] public float? MinP { get; set; }
+        [JsonPropertyName("n_predict")] public int? NPredict { get; set; }
+        [JsonPropertyName("n_indent")] public int? NIndent { get; set; }
+        [JsonPropertyName("n_keep")] public int? NKeep { get; set; }
+        [JsonPropertyName("typical_p")] public float? TypicalP { get; set; }
+        [JsonPropertyName("repeat_penalty")] public float? RepeatPenalty { get; set; }
+        [JsonPropertyName("repeat_last_n")] public int? RepeatLastN { get; set; }
+        [JsonPropertyName("dry_multiplier")] public float? DryMultiplier { get; set; }
+        [JsonPropertyName("dry_base")] public float? DryBase { get; set; }
+        [JsonPropertyName("dry_allowed_length")] public int? DryAllowedLength { get; set; }
+        [JsonPropertyName("dry_penalty_last_n")] public int? DryPenaltyLastN { get; set; }
+        [JsonPropertyName("dry_sequence_breakers")] public string[]? DrySequenceBreakers { get; set; }
+        [JsonPropertyName("xtc_probability")] public float? XtcProbability { get; set; }
+        [JsonPropertyName("xtc_threshold")] public float? XtcThreshold { get; set; }
+        [JsonPropertyName("mirostat")] public int? Mirostat { get; set; }
+        [JsonPropertyName("mirostat_tau")] public float? MirostatTau { get; set; }
+        [JsonPropertyName("mirostat_eta")] public float? MirostatEta { get; set; }
+        [JsonPropertyName("grammar")] public string? Grammar { get; set; }              // need test
+        [JsonPropertyName("ignore_eos")] public bool? IgnoreEos { get; set; }
+        [JsonPropertyName("n_probs")] public int? NProbs { get; set; }
+        [JsonPropertyName("min_keep")] public int? MinKeep { get; set; }
+        [JsonPropertyName("t_max_predict_ms")] public int? TMaxPredictMs { get; set; }
+        [JsonPropertyName("image_data")] public ImageData[]? ImageData { get; set; }    // is this needed?
+        [JsonPropertyName("id_slot")] public int? IdSlot { get; set; }
+        [JsonPropertyName("cache_prompt")] public bool? CachePrompt { get; set; }
+        [JsonPropertyName("return_tokens")] public bool? ReturnTokens { get; set; }
+        [JsonPropertyName("samplers")] public string[]? Samplers { get; set; }
+        [JsonPropertyName("timings_per_token")] public bool? TimingsPerToken { get; set; }
+        [JsonPropertyName("post_sampling_probs")] public bool? PostSamplingProbs { get; set; }
+        [JsonPropertyName("lora")] public CompletionRequestLoRA[]? LoRA { get; set; }   // need test
+
+        public class Builder {
+            private OAICompletionRequest request;
+
+            public Builder() {
+                request = new OAICompletionRequest() {
+                    Model = null,
+                    Prompt = null!,
+                    Echo = false,   // only no echo is supported
+                };
+            }
+
+            public OAICompletionRequest Build() {
+                if (request.Prompt is null) throw new InvalidOperationException("Prompt is not set!");
+                return request;
+            }
+
+            public Builder SetPrompt(string value) { request.Prompt = value; return this; }
+            public Builder SetFrequencyPenalty(float? value) { request.FrequencyPenalty = value; return this; }
+            public Builder SetLogprobs(bool? value) { request.Logprobs = value; return this; }
+            public Builder SetMaxTokens(int? value) { request.MaxTokens = value; return this; }
+            public Builder SetN(int? value) { request.N = value; return this; }
+            public Builder SetPresencePenalty(float? value) { request.PresencePenalty = value; return this; }
+            public Builder SetSeed(int? value) { request.Seed = value; return this; }
+            public Builder SetStop(string[]? value) { request.Stop = value; return this; }
+            public Builder SetTemperature(float? value) { request.Temperature = value; return this; }
+            public Builder SetTopP(float? value) { request.TopP = value; return this; }
+            // llama.cpp completion-specific features
+            public Builder SetDynatempRange(float? value) { request.DynatempRange = value; return this; }
+            public Builder SetDynatempExponent(float? value) { request.DynatempExponent = value; return this; }
+            public Builder SetTopK(int? value) { request.TopK = value; return this; }
+            public Builder SetMinP(float? value) { request.MinP = value; return this; }
+            public Builder SetNPredict(int? value) { request.NPredict = value; return this; }
+            public Builder SetNIndent(int? value) { request.NIndent = value; return this; }
+            public Builder SetNKeep(int? value) { request.NKeep = value; return this; }
+            public Builder SetTypicalP(float? value) { request.TypicalP = value; return this; }
+            public Builder SetRepeatPenalty(float? value) { request.RepeatPenalty = value; return this; }
+            public Builder SetRepeatLastN(int? value) { request.RepeatLastN = value; return this; }
+            public Builder SetDryMultiplier(float? value) { request.DryMultiplier = value; return this; }
+            public Builder SetDryBase(float? value) { request.DryBase = value; return this; }
+            public Builder SetDryAllowedLength(int? value) { request.DryAllowedLength = value; return this; }
+            public Builder SetDryPenaltyLastN(int? value) { request.DryPenaltyLastN = value; return this; }
+            public Builder SetDrySequenceBreakers(string[]? value) { request.DrySequenceBreakers = value; return this; }
+            public Builder SetXtcProbability(float? value) { request.XtcProbability = value; return this; }
+            public Builder SetXtcThreshold(float? value) { request.XtcThreshold = value; return this; }
+            public Builder SetMirostat(int? value) { request.Mirostat = value; return this; }
+            public Builder SetMirostatTau(float? value) { request.MirostatTau = value; return this; }
+            public Builder SetMirostatEta(float? value) { request.MirostatEta = value; return this; }
+            public Builder SetGrammar(string? value) { request.Grammar = value; return this; }
+            public Builder SetIgnoreEos(bool? value) { request.IgnoreEos = value; return this; }
+            public Builder SetNProbs(int? value) { request.NProbs = value; return this; }
+            public Builder SetMinKeep(int? value) { request.MinKeep = value; return this; }
+            public Builder SetTMaxPredictMs(int? value) { request.TMaxPredictMs = value; return this; }
+            public Builder SetImageData(ImageData[]? value) { request.ImageData = value; return this; }
+            public Builder SetIdSlot(int? value) { request.IdSlot = value; return this; }
+            public Builder SetCachePrompt(bool? value) { request.CachePrompt = value; return this; }
+            public Builder SetReturnTokens(bool? value) { request.ReturnTokens = value; return this; }
+            public Builder SetSamplers(string[]? value) { request.Samplers = value; return this; }
+            public Builder SetTimingsPerToken(bool? value) { request.TimingsPerToken = value; return this; }
+            public Builder SetPostSamplingProbs(bool? value) { request.PostSamplingProbs = value; return this; }
+            public Builder SetLoRA(CompletionRequestLoRA[]? value) { request.LoRA = value; return this; }
+        }
+    }
+
+    public class OAICompletionResponse {
+        [JsonPropertyName("id")] public string? Id { get; set; }
+        [JsonPropertyName("object")] public string? Object { get; set; }
+        [JsonPropertyName("created")] public long Created { get; set; }
+        [JsonPropertyName("model")] public string? Model { get; set; }
+        [JsonPropertyName("system_fingerprint")] public string? SystemFingerprint { get; set; }
+        [JsonPropertyName("choices")] public required List<OAICompletionResponseChoice> Choices { get; set; }
+        [JsonPropertyName("usage")] public OAICompletionResponseUsage? Usage { get; set; }
+
+        [JsonIgnore]
+        public OAICompletionResponseChoice FirstChoice { get { return Choices[0]; } }
+    }
+
+    public class OAICompletionResponseChoice {
+        [JsonPropertyName("text")] public required string Text { get; set; }
+        [JsonPropertyName("index")] public required int Index { get; set; }
+        //[JsonPropertyName("logprobs")] public required object? logprobs { get; set; }
+        [JsonPropertyName("finish_reason")] public required string FinishReason { get; set; }
+    }
+
+    public class OAICompletionResponseUsage {
+        [JsonPropertyName("prompt_tokens")] public int PromptTokens { get; set; }
+        [JsonPropertyName("completion_tokens")] public int CompletionTokens { get; set; }
+        [JsonPropertyName("total_tokens")] public int TotalTokens { get; set; }
+    }
+
+    public class OAICompletionStreamResponse {
+        [JsonPropertyName("choices")] public required List<OAICompletionStreamResponseChoice> Choices { get; set; }
+        [JsonPropertyName("created")] public long Created { get; set; }
+        [JsonPropertyName("model")] public string? Model { get; set; }
+        [JsonPropertyName("system_fingerprint")] public string? SystemFingerprint { get; set; }
+        [JsonPropertyName("object")] public string? Object { get; set; }
+        [JsonPropertyName("id")] public string? Id { get; set; }
+        [JsonPropertyName("usage")] public OAICompletionResponseUsage? Usage { get; set; }
+        [JsonPropertyName("timings")] public Timings? Timings { get; set; }
+
+        [JsonIgnore]
+        public OAICompletionStreamResponseChoice FirstChoice { get { return Choices[0]; } }
+    }
+
+    public class OAICompletionStreamResponseChoice {
+        [JsonPropertyName("text")] public string? Text { get; set; }
+        [JsonPropertyName("index")] public required int Index { get; set; }
+        //[JsonPropertyName("logprobs")] public required object? logprobs { get; set; }
+        [JsonPropertyName("finish_reason")] public required string FinishReason { get; set; }
+    }
+#endregion OpenAI-compatible Completion
+
 #region OpenAI-compatible Chat Completion
     public class OAIResponseFormat {
         [JsonPropertyName("type")] public required ResponseType Type { get; set; }

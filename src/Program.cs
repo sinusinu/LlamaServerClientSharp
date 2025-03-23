@@ -86,6 +86,24 @@ class Program {
         Console.WriteLine(models.Data[0].Id);
 #endregion OpenAI-compatible Model Info
 
+#region OpenAI-compatible Completion
+        var oaiCompletionMessage = "Hello, world! ";
+
+        var oaiCompletionRequest = new OAICompletionRequest.Builder()
+            .SetPrompt(oaiCompletionMessage)
+            .Build();
+
+        // immediate
+        var oaiCompletionImmediateResponse = await llamaClient.OAICompletionAsync(oaiCompletionRequest);
+        Console.WriteLine(oaiCompletionImmediateResponse.FirstChoice.Text);
+
+        // streaming
+        await foreach (var oaiCompletionPartialResponse in llamaClient.OAICompletionStreamAsync(oaiCompletionRequest)) {
+            Console.Write(oaiCompletionPartialResponse.FirstChoice.Text);
+        }
+        Console.WriteLine();
+#endregion OpenAI-compatible Completion
+
 #region OpenAI-compatible Chat Completion
         var chatCompletionMessages = new Message.Builder()
             .System("Write an answer to the user's message.")
