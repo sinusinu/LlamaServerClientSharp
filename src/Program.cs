@@ -44,8 +44,7 @@ class Program {
 #endregion Tokenize
 
 #region Detokenize
-        // Gemma 3 specific tokens
-        var detokenizeTokens = new int[] { 9259, 1902, 236888 };
+        var detokenizeTokens = tokens;
         var detokenizeRequest = new DetokenizeRequest.Builder()
             .SetTokens(detokenizeTokens)
             .Build();
