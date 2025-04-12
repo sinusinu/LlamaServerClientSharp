@@ -1,6 +1,6 @@
 # LlamaServerClientSharp
 
-A C# client interface for [LLaMA.cpp HTTP Server](https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md).
+A C# client interface for [`llama-server`](https://github.com/ggml-org/llama.cpp/blob/master/examples/server/README.md), llama.cpp's HTTP server.
 
 # Under construction
 
