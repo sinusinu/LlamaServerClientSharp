@@ -202,7 +202,7 @@ class Program {
             if (oaiChatCompletionSOPartialResponse.FirstChoice.Delta is not null) Console.Write(oaiChatCompletionSOPartialResponse.FirstChoice.Delta.Content);
         }
         Console.WriteLine();
-#endregion OpenAI-compatible Chat Completion (Structured Output)
+#endregion
 
 #region OpenAI-compatible Chat Completion (Multimodal)
         var oaiChatCompletionMultimodalMessages = new Message.ListBuilder()

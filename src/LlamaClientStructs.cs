@@ -100,17 +100,17 @@ public partial class LlamaClient {
         public abstract class CompositeContent {}
 
         public class TextContent : CompositeContent {
-            [JsonPropertyName("Text")] public string Text { get; set; }
-            public TextContent(string text) { Text = text; }
+            public string text { get; set; }
+            public TextContent(string text) { this.text = text; }
         }
 
         public class ImageUrlContent : CompositeContent {
-            [JsonPropertyName("image_url")] public ImageUrlObject ImageUrl { get; set; }
-            public ImageUrlContent(string imageUrl) { ImageUrl = new ImageUrlObject(imageUrl); }
+            public ImageUrlObject image_url { get; set; }
+            public ImageUrlContent(string imageUrl) { image_url = new ImageUrlObject(imageUrl); }
 
             public class ImageUrlObject {
-                [JsonPropertyName("url")] public string Url { get; set; }
-                public ImageUrlObject(string url) { Url = url; }
+                public string url { get; set; }
+                public ImageUrlObject(string url) { this.url = url; }
             }
         }
     }
