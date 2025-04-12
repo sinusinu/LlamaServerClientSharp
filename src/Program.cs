@@ -54,7 +54,7 @@ class Program {
 #region Apply Chat Template
         var applyTemplateRequest = new ApplyTemplateRequest.Builder()
             .SetMessages([
-                Message.User("Hello!")
+                SimpleMessage.User("Hello!")
             ])
             .Build();
 
@@ -148,7 +148,7 @@ class Program {
 #endregion OpenAI-compatible Completion
 
 #region OpenAI-compatible Chat Completion
-        var oaiChatCompletionMessages = new Message.Builder()
+        var oaiChatCompletionMessages = new Message.ListBuilder()
             .System("Write an answer to the user's message.")
             .User("Nice to meet you!")
             .Build();
@@ -171,7 +171,7 @@ class Program {
 #endregion OpenAI-compatible Chat Completion
 
 #region OpenAI-compatible Chat Completion (Structured Output)
-        var oaiChatCompletionSOMessages = new Message.Builder()
+        var oaiChatCompletionSOMessages = new Message.ListBuilder()
             .System(
 @"Write an answer to the user's message, and evaluate if user's message was positive. Output must follow the JSON schema given below.
 
@@ -203,6 +203,26 @@ class Program {
         }
         Console.WriteLine();
 #endregion OpenAI-compatible Chat Completion (Structured Output)
+
+#region OpenAI-compatible Chat Completion (Multimodal)
+        var oaiChatCompletionMultimodalMessages = new Message.ListBuilder()
+            .System("Write an answer to the user's message.")
+            .Add(new CompositeMessage.Builder()
+                .AddText("Describe this image.")
+                .AddImageUrl("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACv0lEQVQ4jW1SW0hTcRz+zjn/M7e5eWmTeWnreFveQsK0NyUtkageBAnCIIogsggJn9Ko9KHoQXywIiqxLAIfAqWQIWURZJGLMNG8zOsKnbc5t7PbOf8edDpd39Of7/d9v+ufwS5kp2oya6qEy+WHE8pTU9RpADBp99gsXx2W1s6pB8OT62Pheib0YFmGuXPJ3HD9THq9Y9nH84SBQa8Ew2yLJYkG7j4fb7r5aLRRlikFAC4UfFKf/7CmSqhr7bBxy84AJmbcGB53Ic8cg7AiXPFB3RGjQWXo+jT/dquD86eM1U8b8l+EhMtOP6JVBFEKFgCwuOLHyIQLMqXIMGmQbFDiQuPPs8+6ZjsYnrBkqrvUlqxXGgHA55dRd28QB8yxuHhaAABYh1bR/mYGmYIGWjXBidJE+ILyjHDyfTopK9SVhMwAwDAAx7EgZHt4s6CB6JXg80m4Up0Wok1lhboSUpQbVxS+VQXPoqk2B8rN9gFAE01QWZ4MIUW942JFuXFFJD5GodvBUopoFYfdqCg2RHDxMQodcbmDa+GkOPEHADCvjMeU3YO4GB45GVooeDYigcsTdLLW305rOMnyBIGFVYheCWoVh/lFL5rbxuERpYgE1hHnD0at5JRz747Oxmt5PfUH4R60AZRCc2g/ZNEHac2D4JobsscHda4AhmyMt+IKLO493mvkAkEapBSBY4W6CvegDbLoBzgO/jkH/PZFSOtesFE8iD4WRKve+ru3Ho/e6BtY+swBQP+v1W8FyaTAxHnNAABJBmS6cZXEPVClp4DTqLbMPV8Wuq/eH6qlFJQFAEmicmvndGvEkJs7CcerHntbZd1AlSRRGQC2oh/HxL6/Tmk6KZbbF25glAqIPmn9w/el3pbXky2Wfkff/woBALKT+CzLtaS+lWbBP3zbONl+LuFlnkmVRTgm8oab+Aet4AewMpDhZwAAAABJRU5ErkJggg==")
+                .BuildUser())
+            .Build();
+
+        var oaiChatCompletionMultimodalRequest = new OAIChatCompletionRequest.Builder()
+            .SetMessages(oaiChatCompletionMultimodalMessages)
+            .SetResponseFormat(OAIResponseFormat.ResponseType.Text, null)
+            .SetMaxCompletionTokens(128)
+            .Build();
+
+        // this feature is not yet available on llama-server side afaik, impl may also change on server side so commenting out for now
+        // var oaiChatCompletionMultimodalImmediateResponse = await llamaClient.OAIChatCompletionAsync(oaiChatCompletionMultimodalRequest);
+        // Console.WriteLine(oaiChatCompletionMultimodalImmediateResponse.FirstChoice.Message.Content);
+#endregion OpenAI-compatible Chat Completion (Multimodal)
 
 #region OpenAI-compatible Create Embeddings
         var oaiEmbeddingsRequest = new OAIEmbeddingsRequest.Builder()

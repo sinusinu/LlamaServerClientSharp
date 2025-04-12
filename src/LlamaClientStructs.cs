@@ -35,23 +35,13 @@ public partial class LlamaClient {
         [JsonPropertyName("id")] public required int Id { get; set; }
     }
 
-    public class Message {
-        public string role { get; set; }
-        public string content { get; set; }
-
-        public Message(string role, string content) {
-            this.role = role;
-            this.content = content;
-        }
-
-        public static Message System(string content) => new Message("system", content);
-        public static Message User(string content) => new Message("user", content);
-        public static Message Assistant(string content) => new Message("assistant", content);
-
-        public class Builder {
+    [JsonDerivedType(typeof(SimpleMessage))]
+    [JsonDerivedType(typeof(CompositeMessage))]
+    public abstract class Message {
+        public class ListBuilder {
             private List<Message> messages;
 
-            public Builder() {
+            public ListBuilder() {
                 messages = new();
             }
 
@@ -59,9 +49,69 @@ public partial class LlamaClient {
                 return messages.ToArray();
             }
 
-            public Builder System(string content) { messages.Add(new Message("system", content)); return this; }
-            public Builder User(string content) { messages.Add(new Message("user", content)); return this; }
-            public Builder Assistant(string content) { messages.Add(new Message("assistant", content)); return this; }
+            public ListBuilder System(string content) { messages.Add(new SimpleMessage("system", content)); return this; }
+            public ListBuilder User(string content) { messages.Add(new SimpleMessage("user", content)); return this; }
+            public ListBuilder Assistant(string content) { messages.Add(new SimpleMessage("assistant", content)); return this; }
+            public ListBuilder Add(Message message) { messages.Add(message); return this; }
+        }
+    }
+
+    public class SimpleMessage : Message {
+        public string role { get; set; }
+        public string content { get; set; }
+
+        internal SimpleMessage(string role, string content) {
+            this.role = role;
+            this.content = content;
+        }
+
+        public static SimpleMessage System(string content) => new SimpleMessage("system", content);
+        public static SimpleMessage User(string content) => new SimpleMessage("user", content);
+        public static SimpleMessage Assistant(string content) => new SimpleMessage("assistant", content);
+    }
+
+    public class CompositeMessage : Message {
+        public string role { get; set; }
+        public CompositeContent[] content { get; set; }
+
+        internal CompositeMessage(string role, CompositeContent[] content) {
+            this.role = role;
+            this.content = content;
+        }
+
+        public class Builder {
+            private List<CompositeContent> content;
+
+            public Builder() {
+                content = new();
+            }
+
+            public CompositeMessage BuildSystem() => new CompositeMessage("system", content.ToArray());
+            public CompositeMessage BuildUser() => new CompositeMessage("user", content.ToArray());
+            public CompositeMessage BuildAssistant() => new CompositeMessage("assistant", content.ToArray());
+
+            public Builder AddText(string text) { content.Add(new TextContent(text)); return this; }
+            public Builder AddImageUrl(string imageUrl) { content.Add(new ImageUrlContent(imageUrl)); return this; }
+        }
+
+        [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+        [JsonDerivedType(typeof(TextContent), "text")]
+        [JsonDerivedType(typeof(ImageUrlContent), "image_url")]
+        public abstract class CompositeContent {}
+
+        public class TextContent : CompositeContent {
+            [JsonPropertyName("Text")] public string Text { get; set; }
+            public TextContent(string text) { Text = text; }
+        }
+
+        public class ImageUrlContent : CompositeContent {
+            [JsonPropertyName("image_url")] public ImageUrlObject ImageUrl { get; set; }
+            public ImageUrlContent(string imageUrl) { ImageUrl = new ImageUrlObject(imageUrl); }
+
+            public class ImageUrlObject {
+                [JsonPropertyName("url")] public string Url { get; set; }
+                public ImageUrlObject(string url) { Url = url; }
+            }
         }
     }
 #endregion Commonly used classes
@@ -258,7 +308,7 @@ public partial class LlamaClient {
 
 #region Apply Chat Template
     public class ApplyTemplateRequest {
-        [JsonPropertyName("messages")] public required Message[] Messages { get; set; }
+        [JsonPropertyName("messages")] public required SimpleMessage[] Messages { get; set; }
 
         public class Builder {
             private ApplyTemplateRequest request;
@@ -274,7 +324,7 @@ public partial class LlamaClient {
                 return request;
             }
 
-            public Builder SetMessages(Message[] value) { request.Messages = value; return this; }
+            public Builder SetMessages(SimpleMessage[] value) { request.Messages = value; return this; }
         }
     }
 
