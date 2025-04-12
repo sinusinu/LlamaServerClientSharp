@@ -27,7 +27,7 @@ class Program {
             Console.Write(partialResponse.Content);
         }
         Console.WriteLine();
-#endregion Completion
+#endregion
 
 #region Tokenize
         var tokenizeString = "Hello world!";
@@ -39,7 +39,7 @@ class Program {
         Console.Write('[');
         foreach (var token in tokens) Console.Write($"{token},");
         Console.WriteLine(']');
-#endregion Tokenize
+#endregion
 
 #region Detokenize
         var detokenizeTokens = tokens;
@@ -49,7 +49,7 @@ class Program {
 
         var detokenizedString = await llamaClient.DetokenizeAsync(detokenizeRequest);
         Console.WriteLine(detokenizedString);
-#endregion Detokenize
+#endregion
 
 #region Apply Chat Template
         var applyTemplateRequest = new ApplyTemplateRequest.Builder()
@@ -60,7 +60,7 @@ class Program {
 
         var applyTemplateResponse = await llamaClient.ApplyTemplateAsync(applyTemplateRequest);
         Console.WriteLine(applyTemplateResponse.Prompt);
-#endregion Apply Chat Template
+#endregion
 
 #region Generate Embedding
         var embeddingRequest = new EmbeddingRequest.Builder()
@@ -69,7 +69,7 @@ class Program {
 
         var embeddingResponse = await llamaClient.GetEmbeddingAsync(embeddingRequest);
         Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
-#endregion Generate Embedding
+#endregion
 
 #region Reranking
         var rerankRequest = new RerankRequest.Builder()
@@ -89,7 +89,7 @@ class Program {
         } catch (LlamaServerException) {
             Console.WriteLine("This server does not support reranking (need a reranking model, set --reranking)");
         }
-#endregion Reranking
+#endregion
 
 #region Get/Set Server Global Properties
         var propsGetResponse = await llamaClient.GetPropsAsync();
@@ -102,7 +102,7 @@ class Program {
         } catch (LlamaServerException) {
             Console.WriteLine($"This server does not support setting props (forgot to set --props?)");
         }
-#endregion Get/Set Server Global Properties
+#endregion
 
 #region Prometheus-compatible Metrics
         try {
@@ -114,19 +114,19 @@ class Program {
         } catch (LlamaServerException) {
             Console.WriteLine($"This server does not support exporting metrics (forgot to set --metrics?)");
         }
-#endregion Prometheus-compatible Metrics
+#endregion
 
 #region LoRA Adapters
         var loraAdapters = await llamaClient.GetLoRAAdaptersAsync();
         Console.WriteLine(loraAdapters.Length);
 
         await llamaClient.SetLoRAAdaptersAsync([]);
-#endregion LoRA Adapters
+#endregion
 
 #region OpenAI-compatible Model Info
         var models = await llamaClient.OAIGetModelsAsync();
         Console.WriteLine(models.Data[0].Id);
-#endregion OpenAI-compatible Model Info
+#endregion
 
 #region OpenAI-compatible Completion
         var oaiCompletionMessage = "Hello, world! ";
@@ -145,7 +145,7 @@ class Program {
             Console.Write(oaiCompletionPartialResponse.FirstChoice.Text);
         }
         Console.WriteLine();
-#endregion OpenAI-compatible Completion
+#endregion
 
 #region OpenAI-compatible Chat Completion
         var oaiChatCompletionMessages = new Message.ListBuilder()
@@ -168,7 +168,7 @@ class Program {
             if (oaiChatCompletionPartialResponse.FirstChoice.Delta is not null) Console.Write(oaiChatCompletionPartialResponse.FirstChoice.Delta.Content);
         }
         Console.WriteLine();
-#endregion OpenAI-compatible Chat Completion
+#endregion
 
 #region OpenAI-compatible Chat Completion (Structured Output)
         var oaiChatCompletionSOMessages = new Message.ListBuilder()
@@ -222,7 +222,7 @@ class Program {
         // this feature is not yet available on llama-server side afaik, impl may also change on server side so commenting out for now
         // var oaiChatCompletionMultimodalImmediateResponse = await llamaClient.OAIChatCompletionAsync(oaiChatCompletionMultimodalRequest);
         // Console.WriteLine(oaiChatCompletionMultimodalImmediateResponse.FirstChoice.Message.Content);
-#endregion OpenAI-compatible Chat Completion (Multimodal)
+#endregion
 
 #region OpenAI-compatible Create Embeddings
         var oaiEmbeddingsRequest = new OAIEmbeddingsRequest.Builder()
@@ -238,7 +238,7 @@ class Program {
         } catch (LlamaServerException) {
             Console.WriteLine("This server does not support OAI-compatible embeddings (forgot to set --polling?)");
         }
-#endregion OpenAI-compatible Create Embeddings
+#endregion
     }
 
     record AnswerSchema(string answer, bool positive);
