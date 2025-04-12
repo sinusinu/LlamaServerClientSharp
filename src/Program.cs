@@ -185,6 +185,18 @@ class Program {
             .User("Nice to meet you!")
             .Build();
 
+        // For JSON mode:
+        /*
+        var oaiChatCompletionSORequest = new OAIChatCompletionRequest.Builder()
+            .SetMessages(oaiChatCompletionSOMessages)
+            .SetResponseFormat(
+                OAIResponseFormat.ResponseType.JsonObject,
+                null
+            )
+            .Build();
+        */
+
+        // For Structured Output:
         var oaiChatCompletionSORequest = new OAIChatCompletionRequest.Builder()
             .SetMessages(oaiChatCompletionSOMessages)
             .SetResponseFormat(
