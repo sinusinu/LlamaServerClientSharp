@@ -1,4 +1,5 @@
-﻿using static LlamaServerClientSharp.LlamaClient;
+﻿using System.Text.Json.Nodes;
+using static LlamaServerClientSharp.LlamaClient;
 
 namespace LlamaServerClientSharp;
 
@@ -212,6 +213,67 @@ class Program {
         // streaming
         await foreach (var oaiChatCompletionSOPartialResponse in llamaClient.OAIChatCompletionStreamAsync(oaiChatCompletionSORequest)) {
             if (oaiChatCompletionSOPartialResponse.FirstChoice.Delta is not null) Console.Write(oaiChatCompletionSOPartialResponse.FirstChoice.Delta.Content);
+        }
+        Console.WriteLine();
+#endregion
+
+#region OpenAI-compatible Chat Completion (tool calling)
+        var oaiChatCompletionToolCallMessages = new Message.ListBuilder()
+            .System("Write an answer to the user's message.")
+            .User("What time is it in London right now?")
+            .Build();
+
+        var oaiChatCompletionToolCallRequest = new OAIChatCompletionRequest.Builder()
+            .SetMessages(oaiChatCompletionToolCallMessages)
+            .SetResponseFormat(OAIResponseFormat.ResponseType.Text, null)
+            .SetMaxCompletionTokens(128)
+            .SetTools([
+                new OAIChatCompletionTool() {
+                    Type = "function",
+                    Function = new() {
+                        Name = "get_time",
+                        Description = "Get the current time",
+                        Parameters = new() {
+                            Type = "object",
+                            Properties = new() {
+                                { "city", new()
+                                    {
+                                        Type = "string",
+                                        Description = "The city name to get the timezone"
+                                    }
+                                }
+                            }
+                        },
+                        Required = [ "city" ]
+                    }
+                }
+            ])
+            .Build();
+
+        // with tool calling, streaming response is not supported
+        try {
+            var oaiChatCompletionToolCallImmediateResponse = await llamaClient.OAIChatCompletionAsync(oaiChatCompletionToolCallRequest);
+            if (oaiChatCompletionToolCallImmediateResponse.FirstChoice.FinishReason == "tool_calls") {
+                var toolCalls = oaiChatCompletionToolCallImmediateResponse.FirstChoice.Message.ToolCalls!;
+                foreach (var toolCall in toolCalls) {
+                    if (toolCall.Function.Name == "get_time") {
+                        var timeArgs = JsonNode.Parse(toolCall.Function.Arguments!)!;
+                        var cityNode = timeArgs["city"];
+                        if (cityNode is not null) {
+                            var city = cityNode.ToString();
+                            Console.WriteLine($"Model called get_time tool, asking for time in {city}");
+                        } else {
+                            Console.WriteLine("Model called get_time tool, but no city was given");
+                        }
+                    } else {
+                        Console.WriteLine($"Model called {toolCall.Function.Name} tool with arguments {toolCall.Function.Arguments ?? "none"}");
+                    }
+                }
+            } else {
+                Console.WriteLine(oaiChatCompletionToolCallImmediateResponse.FirstChoice.Message.Content);
+            }
+        } catch (LlamaServerException e) when (e.LlamaErrorMessage.Contains("tools param requires --jinja")) {
+            Console.WriteLine("This server does not support tool calling (forgot to set --jinja?)");
         }
         Console.WriteLine();
 #endregion

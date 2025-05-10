@@ -752,6 +752,7 @@ public partial class LlamaClient {
         [JsonPropertyName("timings_per_token")] public bool? TimingsPerToken { get; set; }
         [JsonPropertyName("post_sampling_probs")] public bool? PostSamplingProbs { get; set; }
         [JsonPropertyName("lora")] public CompletionRequestLoRA[]? LoRA { get; set; }   // need test
+        [JsonPropertyName("tools")] public OAIChatCompletionTool[]? Tools { get; set; }
 
         public class Builder {
             private OAIChatCompletionRequest request;
@@ -814,6 +815,7 @@ public partial class LlamaClient {
             public Builder SetTimingsPerToken(bool? value) { request.TimingsPerToken = value; return this; }
             public Builder SetPostSamplingProbs(bool? value) { request.PostSamplingProbs = value; return this; }
             public Builder SetLoRA(CompletionRequestLoRA[]? value) { request.LoRA = value; return this; }
+            public Builder SetTools(OAIChatCompletionTool[]? value) { request.Tools = value; return this; }
         }
     }
 
@@ -840,6 +842,17 @@ public partial class LlamaClient {
     public class OAIChatCompletionResponseChoiceMessage {
         [JsonPropertyName("role")] public required string Role { get; set; }
         [JsonPropertyName("content")] public required string Content { get; set; }
+        [JsonPropertyName("tool_calls")] public OAIChatCompletionResponseToolCall[]? ToolCalls { get; set; }
+    }
+
+    public class OAIChatCompletionResponseToolCall {
+        [JsonPropertyName("type")] public required string Type { get; set; }
+        [JsonPropertyName("function")] public required OAIChatCompletionResponseToolCallFunction Function { get; set; }
+    }
+
+    public class OAIChatCompletionResponseToolCallFunction {
+        [JsonPropertyName("name")] public required string Name { get; set; }
+        [JsonPropertyName("arguments")] public string? Arguments { get; set; }
     }
 
     public class OAIChatCompletionResponseUsage {
@@ -871,6 +884,28 @@ public partial class LlamaClient {
     // look at this stupid class name lmfao
     public class OAIChatCompletionStreamResponseChoiceDelta {
         [JsonPropertyName("content")] public string? Content { get; set; }
+    }
+
+    public class OAIChatCompletionTool {
+        [JsonPropertyName("type")] public required string Type { get; set; }
+        [JsonPropertyName("function")] public required OAIChatCompletionToolFunction Function { get; set; }
+    }
+
+    public class OAIChatCompletionToolFunction {
+        [JsonPropertyName("name")] public required string Name { get; set; }
+        [JsonPropertyName("description")] public required string Description { get; set; }
+        [JsonPropertyName("parameters")] public required OAIChatCompletionToolFunctionParameter Parameters { get; set; }
+        [JsonPropertyName("required")] public required string[] Required { get; set; }
+    }
+
+    public class OAIChatCompletionToolFunctionParameter {
+        [JsonPropertyName("type")] public required string Type { get; set; }
+        [JsonPropertyName("properties")] public required Dictionary<string, OAIChatCompletionToolFunctionParameterProperty> Properties { get; set; }
+    }
+
+    public class OAIChatCompletionToolFunctionParameterProperty {
+        [JsonPropertyName("type")] public required string Type { get; set; }
+        [JsonPropertyName("description")] public required string Description { get; set; }
     }
 #endregion OpenAI-compatible Chat Completion
 

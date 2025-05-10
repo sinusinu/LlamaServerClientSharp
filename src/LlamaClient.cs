@@ -393,6 +393,8 @@ public partial class LlamaClient : IDisposable {
     /// <summary>POST /v1/chat/completions, "stream": true</summary>
     /// <param name="request">Use <c>OAIChatCompletionRequest.Builder</c>.</param>
     public async IAsyncEnumerable<OAIChatCompletionStreamResponse> OAIChatCompletionStreamAsync(OAIChatCompletionRequest request) {
+        if (request.Tools != null) throw new ArgumentException("Tools are not supported in streaming mode.");
+
         request.Stream = true;
         using StringContent postContent = new(
             JsonSerializer.Serialize(request, new JsonSerializerOptions() {
