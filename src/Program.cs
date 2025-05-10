@@ -231,9 +231,8 @@ class Program {
             .SetMaxCompletionTokens(128)
             .Build();
 
-        // this feature is not yet available on llama-server side afaik, impl may also change on server side so commenting out for now
-        // var oaiChatCompletionMultimodalImmediateResponse = await llamaClient.OAIChatCompletionAsync(oaiChatCompletionMultimodalRequest);
-        // Console.WriteLine(oaiChatCompletionMultimodalImmediateResponse.FirstChoice.Message.Content);
+        var oaiChatCompletionMultimodalImmediateResponse = await llamaClient.OAIChatCompletionAsync(oaiChatCompletionMultimodalRequest);
+        Console.WriteLine(oaiChatCompletionMultimodalImmediateResponse.FirstChoice.Message.Content);
 #endregion
 
 #region OpenAI-compatible Create Embeddings
