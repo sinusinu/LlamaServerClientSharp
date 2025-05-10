@@ -231,8 +231,12 @@ class Program {
             .SetMaxCompletionTokens(128)
             .Build();
 
-        var oaiChatCompletionMultimodalImmediateResponse = await llamaClient.OAIChatCompletionAsync(oaiChatCompletionMultimodalRequest);
-        Console.WriteLine(oaiChatCompletionMultimodalImmediateResponse.FirstChoice.Message.Content);
+        try {
+            var oaiChatCompletionMultimodalImmediateResponse = await llamaClient.OAIChatCompletionAsync(oaiChatCompletionMultimodalRequest);
+            Console.WriteLine(oaiChatCompletionMultimodalImmediateResponse.FirstChoice.Message.Content);
+        } catch (LlamaServerException e) when (e.LlamaErrorMessage.Contains("image input is not supported")) {
+            Console.WriteLine("This server does not support multimodal input (forgot to set --mmproj?)");
+        }
 #endregion
 
 #region OpenAI-compatible Create Embeddings
