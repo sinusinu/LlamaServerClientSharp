@@ -10,8 +10,8 @@ class Program {
 
         await GetHealthAsync(llamaClient);
         await CompletionAsync(llamaClient);
-        var tokens = await Tokenize(llamaClient);
-        await Detokenize(llamaClient, tokens);
+        var tokens = await TokenizeAsync(llamaClient);
+        await DetokenizeAsync(llamaClient, tokens);
         await ApplyTemplateAsync(llamaClient);
         await GenerateEmbeddingAsync(llamaClient);
         await RerankingAsync(llamaClient);
@@ -53,7 +53,7 @@ class Program {
         Console.WriteLine();
     }
 
-    static async Task<int[]> Tokenize(LlamaClient llamaClient) {
+    static async Task<int[]> TokenizeAsync(LlamaClient llamaClient) {
         var tokenizeString = "Hello world!";
         var tokenizeRequest = new TokenizeRequest.Builder()
             .SetContent(tokenizeString)
@@ -64,7 +64,7 @@ class Program {
         return tokens;
     }
 
-    static async Task Detokenize(LlamaClient llamaClient, int[] tokens) {
+    static async Task DetokenizeAsync(LlamaClient llamaClient, int[] tokens) {
         var detokenizeTokens = tokens;
         var detokenizeRequest = new DetokenizeRequest.Builder()
             .SetTokens(detokenizeTokens)
