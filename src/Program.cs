@@ -26,6 +26,7 @@ class Program {
         await OAIChatCompletionWithMultimodalityAsync(llamaClient);
         await OAICreateEmbeddingsAsync(llamaClient);
     }
+    
     static async Task GetHealthAsync(LlamaClient llamaClient) {
         var health = await llamaClient.GetHealthAsync();
         Console.WriteLine(health);
