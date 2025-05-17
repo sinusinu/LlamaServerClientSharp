@@ -155,7 +155,7 @@ class Program {
 
         var oaiCompletionRequest = new OAICompletionRequest.Builder()
             .SetPrompt(oaiCompletionMessage)
-            .SetMaxTokens(128)
+            .SetMaxTokens(32)
             .Build();
 
         // immediate
@@ -178,7 +178,7 @@ class Program {
         var oaiChatCompletionRequest = new OAIChatCompletionRequest.Builder()
             .SetMessages(oaiChatCompletionMessages)
             .SetResponseFormat(OAIResponseFormat.ResponseType.Text, null)
-            .SetMaxCompletionTokens(128)
+            .SetMaxCompletionTokens(32)
             .Build();
 
         // immediate
@@ -247,7 +247,7 @@ class Program {
         var oaiChatCompletionToolCallRequest = new OAIChatCompletionRequest.Builder()
             .SetMessages(oaiChatCompletionToolCallMessages)
             .SetResponseFormat(OAIResponseFormat.ResponseType.Text, null)
-            .SetMaxCompletionTokens(128)
+            .SetMaxCompletionTokens(32)
             .SetTools([
                 new OAIChatCompletionTool() {
                     Type = "function",
@@ -310,7 +310,7 @@ class Program {
         var oaiChatCompletionMultimodalRequest = new OAIChatCompletionRequest.Builder()
             .SetMessages(oaiChatCompletionMultimodalMessages)
             .SetResponseFormat(OAIResponseFormat.ResponseType.Text, null)
-            .SetMaxCompletionTokens(128)
+            .SetMaxCompletionTokens(32)
             .Build();
 
         try {
