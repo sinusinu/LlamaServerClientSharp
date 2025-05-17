@@ -7,11 +7,32 @@ class Program {
     static async Task Main(string[] args) {
         Uri uri = new Uri("http://localhost:8080");
         using var llamaClient = new LlamaClient(uri);
-        
+
+        await GetHealthAsync(llamaClient);
+        await CompletionAsync(llamaClient);
+        var tokens = await Tokenize(llamaClient);
+        await Detokenize(llamaClient, tokens);
+        await ApplyTemplateAsync(llamaClient);
+        await GenerateEmbeddingAsync(llamaClient);
+        await RerankingAsync(llamaClient);
+        await GetSetServerPropertiesAsync(llamaClient);
+        await GetMetricsAsync(llamaClient);
+        await GetSetLoRAAdaptersAsync(llamaClient);
+        await GetModelInfoAsync(llamaClient);
+        await OAICompletionAsync(llamaClient);
+        await OAIChatCompletionAsync(llamaClient);
+        await OAIChatCompletionWithStructuredOutputAsync(llamaClient);
+        await OAIChatCompletionWithToolCallingAsync(llamaClient);
+        await OAIChatCompletionWithMultimodalityAsync(llamaClient);
+        await OAICreateEmbeddingsAsync(llamaClient);
+    }
+    static async Task GetHealthAsync(LlamaClient llamaClient) {
         var health = await llamaClient.GetHealthAsync();
         Console.WriteLine(health);
+    }
 
-#region Completion
+    static async Task CompletionAsync(LlamaClient llamaClient)
+    {
         // Gemma 3 specific format
         var prompt = "<start_of_turn>user\nYou are a helpful assistant\n\nHello<end_of_turn>\n<start_of_turn>model\n";
         var completionRequest = new CompletionRequest.Builder()
@@ -24,25 +45,25 @@ class Program {
         Console.WriteLine(completionResponse.Content);
 
         // streaming
-        await foreach (var partialResponse in llamaClient.CompletionStreamAsync(completionRequest)) {
+        await foreach (var partialResponse in llamaClient.CompletionStreamAsync(completionRequest))
+        {
             Console.Write(partialResponse.Content);
         }
         Console.WriteLine();
-#endregion
+    }
 
-#region Tokenize
+    static async Task<int[]> Tokenize(LlamaClient llamaClient) {
         var tokenizeString = "Hello world!";
         var tokenizeRequest = new TokenizeRequest.Builder()
             .SetContent(tokenizeString)
             .Build();
 
         var tokens = await llamaClient.TokenizeAsync(tokenizeRequest);
-        Console.Write('[');
-        foreach (var token in tokens) Console.Write($"{token},");
-        Console.WriteLine(']');
-#endregion
+        foreach (var token in tokens) Console.Write($"{token} ");
+        return tokens;
+    }
 
-#region Detokenize
+    static async Task Detokenize(LlamaClient llamaClient, int[] tokens) {
         var detokenizeTokens = tokens;
         var detokenizeRequest = new DetokenizeRequest.Builder()
             .SetTokens(detokenizeTokens)
@@ -50,9 +71,9 @@ class Program {
 
         var detokenizedString = await llamaClient.DetokenizeAsync(detokenizeRequest);
         Console.WriteLine(detokenizedString);
-#endregion
+    }
 
-#region Apply Chat Template
+    static async Task ApplyTemplateAsync(LlamaClient llamaClient) {
         var applyTemplateRequest = new ApplyTemplateRequest.Builder()
             .SetMessages([
                 SimpleMessage.User("Hello!")
@@ -61,18 +82,18 @@ class Program {
 
         var applyTemplateResponse = await llamaClient.ApplyTemplateAsync(applyTemplateRequest);
         Console.WriteLine(applyTemplateResponse.Prompt);
-#endregion
+    }
 
-#region Generate Embedding
+    static async Task GenerateEmbeddingAsync(LlamaClient llamaClient) {
         var embeddingRequest = new EmbeddingRequest.Builder()
             .SetContent("Hello world!")
             .Build();
 
         var embeddingResponse = await llamaClient.GetEmbeddingAsync(embeddingRequest);
         Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
-#endregion
+    }
 
-#region Reranking
+    static async Task RerankingAsync(LlamaClient llamaClient) {
         var rerankRequest = new RerankRequest.Builder()
             .SetQuery("What is panda?")
             .SetDocuments([
@@ -90,9 +111,9 @@ class Program {
         } catch (LlamaServerException) {
             Console.WriteLine("This server does not support reranking (need a reranking model, set --reranking)");
         }
-#endregion
+    }
 
-#region Get/Set Server Global Properties
+    static async Task GetSetServerPropertiesAsync(LlamaClient llamaClient) {
         var propsGetResponse = await llamaClient.GetPropsAsync();
         Console.WriteLine(propsGetResponse.BuildInfo);
 
@@ -103,9 +124,9 @@ class Program {
         } catch (LlamaServerException) {
             Console.WriteLine($"This server does not support setting props (forgot to set --props?)");
         }
-#endregion
+    }
 
-#region Prometheus-compatible Metrics
+    static async Task GetMetricsAsync(LlamaClient llamaClient) {
         try {
             var metrics = await llamaClient.GetMetricsAsync();
             foreach (var metricsLine in metrics.Split('\n')) {
@@ -115,21 +136,21 @@ class Program {
         } catch (LlamaServerException) {
             Console.WriteLine($"This server does not support exporting metrics (forgot to set --metrics?)");
         }
-#endregion
+    }
 
-#region LoRA Adapters
+    static async Task GetSetLoRAAdaptersAsync(LlamaClient llamaClient) {
         var loraAdapters = await llamaClient.GetLoRAAdaptersAsync();
         Console.WriteLine(loraAdapters.Length);
 
         await llamaClient.SetLoRAAdaptersAsync([]);
-#endregion
+    }
 
-#region OpenAI-compatible Model Info
+    static async Task GetModelInfoAsync(LlamaClient llamaClient) {
         var models = await llamaClient.OAIGetModelsAsync();
         Console.WriteLine(models.Data[0].Id);
-#endregion
+    }
 
-#region OpenAI-compatible Completion
+    static async Task OAICompletionAsync(LlamaClient llamaClient) {
         var oaiCompletionMessage = "Hello, world! ";
 
         var oaiCompletionRequest = new OAICompletionRequest.Builder()
@@ -146,9 +167,9 @@ class Program {
             Console.Write(oaiCompletionPartialResponse.FirstChoice.Text);
         }
         Console.WriteLine();
-#endregion
+    }
 
-#region OpenAI-compatible Chat Completion
+    static async Task OAIChatCompletionAsync(LlamaClient llamaClient) {
         var oaiChatCompletionMessages = new Message.ListBuilder()
             .System("Write an answer to the user's message.")
             .User("Nice to meet you!")
@@ -169,9 +190,9 @@ class Program {
             if (oaiChatCompletionPartialResponse.FirstChoice.Delta is not null) Console.Write(oaiChatCompletionPartialResponse.FirstChoice.Delta.Content);
         }
         Console.WriteLine();
-#endregion
+    }
 
-#region OpenAI-compatible Chat Completion (Structured Output)
+    static async Task OAIChatCompletionWithStructuredOutputAsync(LlamaClient llamaClient) {
         var oaiChatCompletionSOMessages = new Message.ListBuilder()
             .System(
 @"Write an answer to the user's message, and evaluate if user's message was positive. Output must follow the JSON schema given below.
@@ -215,9 +236,9 @@ class Program {
             if (oaiChatCompletionSOPartialResponse.FirstChoice.Delta is not null) Console.Write(oaiChatCompletionSOPartialResponse.FirstChoice.Delta.Content);
         }
         Console.WriteLine();
-#endregion
+    }
 
-#region OpenAI-compatible Chat Completion (tool calling)
+    static async Task OAIChatCompletionWithToolCallingAsync(LlamaClient llamaClient) {
         var oaiChatCompletionToolCallMessages = new Message.ListBuilder()
             .System("Write an answer to the user's message.")
             .User("What time is it in London right now?")
@@ -275,10 +296,9 @@ class Program {
         } catch (LlamaServerException e) when (e.LlamaErrorMessage.Contains("tools param requires --jinja")) {
             Console.WriteLine("This server does not support tool calling (forgot to set --jinja?)");
         }
-        Console.WriteLine();
-#endregion
+    }
 
-#region OpenAI-compatible Chat Completion (Multimodal)
+    static async Task OAIChatCompletionWithMultimodalityAsync(LlamaClient llamaClient) {
         var oaiChatCompletionMultimodalMessages = new Message.ListBuilder()
             .System("Write an answer to the user's message.")
             .Add(new CompositeMessage.Builder()
@@ -299,9 +319,9 @@ class Program {
         } catch (LlamaServerException e) when (e.LlamaErrorMessage.Contains("image input is not supported")) {
             Console.WriteLine("This server does not support multimodal input (forgot to set --mmproj?)");
         }
-#endregion
+    }
 
-#region OpenAI-compatible Create Embeddings
+    static async Task OAICreateEmbeddingsAsync(LlamaClient llamaClient) {
         var oaiEmbeddingsRequest = new OAIEmbeddingsRequest.Builder()
             .SetInput("Hello world!")
             .Build();
@@ -315,7 +335,6 @@ class Program {
         } catch (LlamaServerException) {
             Console.WriteLine("This server does not support OAI-compatible embeddings (forgot to set --polling?)");
         }
-#endregion
     }
 
     record AnswerSchema(string answer, bool positive);
