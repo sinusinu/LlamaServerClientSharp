@@ -14,11 +14,11 @@ class Program {
         await DetokenizeAsync(llamaClient, tokens);
         await ApplyTemplateAsync(llamaClient);
         await GenerateEmbeddingAsync(llamaClient);
-        await RerankingAsync(llamaClient);
-        await GetSetServerPropertiesAsync(llamaClient);
+        await RerankAsync(llamaClient);
+        await GetSetPropsAsync(llamaClient);
         await GetMetricsAsync(llamaClient);
         await GetSetLoRAAdaptersAsync(llamaClient);
-        await GetModelInfoAsync(llamaClient);
+        await OAIGetModelsAsync(llamaClient);
         await OAICompletionAsync(llamaClient);
         await OAIChatCompletionAsync(llamaClient);
         await OAIChatCompletionWithStructuredOutputAsync(llamaClient);
@@ -92,7 +92,7 @@ class Program {
         Console.WriteLine(embeddingResponse[0].Embedding[0][0]);
     }
 
-    static async Task RerankingAsync(LlamaClient llamaClient) {
+    static async Task RerankAsync(LlamaClient llamaClient) {
         var rerankRequest = new RerankRequest.Builder()
             .SetQuery("What is panda?")
             .SetDocuments([
@@ -112,7 +112,7 @@ class Program {
         }
     }
 
-    static async Task GetSetServerPropertiesAsync(LlamaClient llamaClient) {
+    static async Task GetSetPropsAsync(LlamaClient llamaClient) {
         var propsGetResponse = await llamaClient.GetPropsAsync();
         Console.WriteLine(propsGetResponse.BuildInfo);
 
@@ -144,7 +144,7 @@ class Program {
         await llamaClient.SetLoRAAdaptersAsync([]);
     }
 
-    static async Task GetModelInfoAsync(LlamaClient llamaClient) {
+    static async Task OAIGetModelsAsync(LlamaClient llamaClient) {
         var models = await llamaClient.OAIGetModelsAsync();
         Console.WriteLine(models.Data[0].Id);
     }
