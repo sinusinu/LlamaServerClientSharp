@@ -32,8 +32,7 @@ class Program {
         Console.WriteLine(health);
     }
 
-    static async Task CompletionAsync(LlamaClient llamaClient)
-    {
+    static async Task CompletionAsync(LlamaClient llamaClient) {
         // Gemma 3 specific format
         var prompt = "<start_of_turn>user\nYou are a helpful assistant\n\nHello<end_of_turn>\n<start_of_turn>model\n";
         var completionRequest = new CompletionRequest.Builder()
@@ -46,8 +45,7 @@ class Program {
         Console.WriteLine(completionResponse.Content);
 
         // streaming
-        await foreach (var partialResponse in llamaClient.CompletionStreamAsync(completionRequest))
-        {
+        await foreach (var partialResponse in llamaClient.CompletionStreamAsync(completionRequest)) {
             Console.Write(partialResponse.Content);
         }
         Console.WriteLine();
