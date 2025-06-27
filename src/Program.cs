@@ -5,8 +5,9 @@ namespace LlamaServerClientSharp;
 
 class Program {
     static async Task Main(string[] args) {
-        Uri uri = new Uri("http://localhost:8080");
-        using var llamaClient = new LlamaClient(uri);
+        using var llamaClient = new LlamaClient(); // connects to http://localhost:8080
+        // to connect to the different endpoint use:
+        // using var llamaClient = new LlamaClient("http://example.com:12345");
 
         await GetHealthAsync(llamaClient);
         await CompletionAsync(llamaClient);

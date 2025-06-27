@@ -13,6 +13,11 @@ public partial class LlamaClient : IDisposable {
         this.endpoint = endpoint.ToString();
     }
 
+    public LlamaClient(string url) : this(new Uri(url)) {}
+
+    /// <summary>Connects to <c>http://localhost:8080</c>.</summary>
+    public LlamaClient() : this("http://localhost:8080") {}
+
     /// <summary>GET /health</summary>
     public async Task<Health> GetHealthAsync() {
         var response = await client.GetAsync(endpoint + "health");
