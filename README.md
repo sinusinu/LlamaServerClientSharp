@@ -39,8 +39,8 @@ dotnet add reference LlamaServerClientSharp/LlamaServerClientSharp.csproj
 ```csharp
 using static LlamaServerClientSharp.LlamaClient;
 
-Uri uri = new Uri("http://localhost:8080");
-using var client = new LlamaClient(uri);
+using var client = new LlamaClient();
+// or: using var client = new LlamaClient("http://localhost:8080");
 
 var messages = new Message.ListBuilder()
     .System("Write an answer to the user's message.")
