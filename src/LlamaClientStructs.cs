@@ -49,6 +49,7 @@ public partial class LlamaClient {
                 return messages.ToArray();
             }
 
+            public ListBuilder Developer(string content) { messages.Add(new SimpleMessage("developer", content)); return this; }
             public ListBuilder System(string content) { messages.Add(new SimpleMessage("system", content)); return this; }
             public ListBuilder User(string content) { messages.Add(new SimpleMessage("user", content)); return this; }
             public ListBuilder Assistant(string content) { messages.Add(new SimpleMessage("assistant", content)); return this; }
@@ -65,6 +66,7 @@ public partial class LlamaClient {
             this.content = content;
         }
 
+        public static SimpleMessage Developer(string content) => new SimpleMessage("developer", content);
         public static SimpleMessage System(string content) => new SimpleMessage("system", content);
         public static SimpleMessage User(string content) => new SimpleMessage("user", content);
         public static SimpleMessage Assistant(string content) => new SimpleMessage("assistant", content);
@@ -86,6 +88,7 @@ public partial class LlamaClient {
                 content = new();
             }
 
+            public CompositeMessage BuildDeveloper() => new CompositeMessage("developer", content.ToArray());
             public CompositeMessage BuildSystem() => new CompositeMessage("system", content.ToArray());
             public CompositeMessage BuildUser() => new CompositeMessage("user", content.ToArray());
             public CompositeMessage BuildAssistant() => new CompositeMessage("assistant", content.ToArray());
